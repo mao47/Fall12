@@ -280,13 +280,13 @@ void	mouseMotion(int x, int y)
 {
 	if(panMouse)
 	{
-		cameraLongAngle += 0.005 * (x-lastx);
+		cameraLongAngle += 0.01 * (x-lastx);
 		if(cameraLongAngle < 0) cameraLongAngle += 2*PI;
 		else if(cameraLongAngle > 2*PI) cameraLongAngle -= 2*PI;
 
-		cameraLatAngle -= 0.005 * (y-lasty);
-		if(cameraLatAngle < 0) cameraLatAngle = 0;
-		else if (cameraLatAngle > PI) cameraLatAngle = PI;
+		cameraLatAngle += 0.005 * (y-lasty);
+		if(cameraLatAngle < 0.01) cameraLatAngle = 0.01;
+		else if (cameraLatAngle > PI-.01) cameraLatAngle = PI-.01;
 	}
 	if(zoomMouse)
 	{
