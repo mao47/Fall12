@@ -169,7 +169,7 @@ void	display(void)
 
 		//float distance = sqrt(xcamera * xcamera + ycamera * ycamera + zcamera * zcamera);
 		// Set the camera position, orientation and target
-		gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
+		gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,0,1);
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -187,15 +187,15 @@ void	display(void)
 	if(showAxes){
 		//try drawing some axes
 		glBegin (GL_LINES);
-		glColor3f (1,1,1); // X axis color.
+		glColor3f (0,1,1); // X axis color.
 		glVertex3f (0,0,0);
-		glVertex3f (10,0,0 ); 
-		glColor3f (1,1,1); // Y axis color.
+		glVertex3f (1,0,0 ); 
+		glColor3f (1,0,1); // Y axis color.
 		glVertex3f (0,0,0);
-		glVertex3f (0,10,0 );
-		glColor3f (1,1,1); // z axis color.
+		glVertex3f (0,1,0 );
+		glColor3f (1,1,0); // z axis color.
 		glVertex3f (0,0,0);
-		glVertex3f (0,0,10 ); 
+		glVertex3f (0,0,1 ); 
 		glEnd();
 	}
 
@@ -287,22 +287,14 @@ void	mouseMotion(int x, int y)
 		cameraLatAngle -= 0.005 * (y-lasty);
 		if(cameraLatAngle < 0) cameraLatAngle = 0;
 		else if (cameraLatAngle > PI) cameraLatAngle = PI;
-		//glLoadIdentity();
-		//gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
-		//glLoadIdentity();
 	}
 	if(zoomMouse)
 	{
 		cameraDistance += 0.005 * (y-lasty);
-		//glLoadIdentity();
-		//gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
-		//glLoadIdentity();
 	}
 	lastx = x;
 	lasty = y;
 	glutPostRedisplay();
-
-	//printf("Mouse is at %d, %d\n", x,y);
 }
 
 
