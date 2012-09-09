@@ -28,6 +28,7 @@ typedef struct _faceStruct {
   int n1,n2,n3;
 } faceStruct;
 
+float PI = atan((float)1)*4;
 int lastx=0; int lasty = 0;
 int panMouse = OFF;
 int zoomMouse = OFF;
@@ -168,7 +169,7 @@ void	display(void)
 
 		//float distance = sqrt(xcamera * xcamera + ycamera * ycamera + zcamera * zcamera);
 		// Set the camera position, orientation and target
-		gluLookAt(cameraDistance*cos(cameraLongAngle)*cos(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*cos(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle), 0,0,0, 0,1,0);
+		gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -270,7 +271,6 @@ void	mouseButton(int button,int state,int x,int y)
 		else zoomMouse=OFF;
 	}
 	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
-    printf("Mouse click at %d %d, button: %d, state %d\n",x,y,button,state);
 }
 
 
@@ -280,15 +280,27 @@ void	mouseMotion(int x, int y)
 {
 	if(panMouse)
 	{
-		cameraLongAngle += 0.001 * (x-lastx);
-		cameraLatAngle -= 0.01 * (y-lasty);
+		cameraLongAngle += 0.005 * (x-lastx);
+		if(cameraLongAngle < 0) cameraLongAngle += 2*PI;
+		else if(cameraLongAngle > 2*PI) cameraLongAngle -= 2*PI;
+
+		cameraLatAngle -= 0.005 * (y-lasty);
+		if(cameraLatAngle < 0) cameraLatAngle = 0;
+		else if (cameraLatAngle > PI) cameraLatAngle = PI;
+		//glLoadIdentity();
+		//gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
+		//glLoadIdentity();
 	}
 	if(zoomMouse)
 	{
-		cameraDistance += 0.01 * (y-lasty);
+		cameraDistance += 0.005 * (y-lasty);
+		//glLoadIdentity();
+		//gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,1,0);
+		//glLoadIdentity();
 	}
 	lastx = x;
 	lasty = y;
+	glutPostRedisplay();
 
 	//printf("Mouse is at %d, %d\n", x,y);
 }
