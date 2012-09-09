@@ -28,7 +28,13 @@ typedef struct _faceStruct {
   int n1,n2,n3;
 } faceStruct;
 
-
+int lastx=0; int lasty = 0;
+int panMouse = OFF;
+int zoomMouse = OFF;
+float xcamera,ycamera,zcamera;
+float cameraDistance = 5;
+float cameraLatAngle = 0;
+float cameraLongAngle = 0;
 
 int verts, faces, norms;    // Number of vertices, faces and normals in the system
 point *vertList, *normList; // Vertex and Normal Lists
@@ -159,8 +165,10 @@ void	display(void)
    
     if (PERSPECTIVE) {
 		glLoadIdentity();
+
+		//float distance = sqrt(xcamera * xcamera + ycamera * ycamera + zcamera * zcamera);
 		// Set the camera position, orientation and target
-		gluLookAt(1,3,5, 0,0,0, 0,1,0);
+		gluLookAt(cameraDistance*cos(cameraLongAngle)*cos(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*cos(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle), 0,0,0, 0,1,0);
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -249,6 +257,19 @@ void	resize(int x,int y)
 // x and y are the location of the mouse (in window-relative coordinates)
 void	mouseButton(int button,int state,int x,int y)
 {
+	lastx = x;
+	lasty = y;
+	if(button == 0) //left button: pan
+	{
+		if(state==0) panMouse=ON;
+		else panMouse=OFF;
+	}
+	else if(button == 2)
+	{
+		if(state==0) zoomMouse=ON;
+		else zoomMouse=OFF;
+	}
+	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
     printf("Mouse click at %d %d, button: %d, state %d\n",x,y,button,state);
 }
 
@@ -257,7 +278,19 @@ void	mouseButton(int button,int state,int x,int y)
 // x and y are the location of the mouse (in window-relative coordinates)
 void	mouseMotion(int x, int y)
 {
-	printf("Mouse is at %d, %d\n", x,y);
+	if(panMouse)
+	{
+		cameraLongAngle += 0.001 * (x-lastx);
+		cameraLatAngle -= 0.01 * (y-lasty);
+	}
+	if(zoomMouse)
+	{
+		cameraDistance += 0.01 * (y-lasty);
+	}
+	lastx = x;
+	lasty = y;
+
+	//printf("Mouse is at %d, %d\n", x,y);
 }
 
 
@@ -310,6 +343,8 @@ void	keyboard(unsigned char key, int x, int y)
 // Here's the main
 int main(int argc, char* argv[])
 {
+	cameraDistance=5;
+
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
