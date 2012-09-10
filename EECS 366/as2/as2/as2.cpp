@@ -164,13 +164,13 @@ void	display(void)
     // Clear the background
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-    if (PERSPECTIVE) {
+    //if (PERSPECTIVE) {
 		glLoadIdentity();
 
 		//float distance = sqrt(xcamera * xcamera + ycamera * ycamera + zcamera * zcamera);
 		// Set the camera position, orientation and target
 		gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,0,1);
-    }
+    //}
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
