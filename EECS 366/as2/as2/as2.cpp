@@ -15,7 +15,7 @@
 // Global variables
 int window_width, window_height;    // Window dimensions
 int PERSPECTIVE = OFF;
-int showAxes = ON;
+
 
 // Vertex and Face data structure sued in the mesh reader
 // Feel free to change them
@@ -28,14 +28,22 @@ typedef struct _faceStruct {
   int n1,n2,n3;
 } faceStruct;
 
+//pi
 float PI = atan((float)1)*4;
+
+//mouse movement vars
 int lastx=0; int lasty = 0;
 int panMouse = OFF;
 int zoomMouse = OFF;
-float xcamera,ycamera,zcamera;
+
+//what to display
+int showAxes = ON;
+int showObj = ON;
+
+//camera vars
 float cameraDistance = 5;
-float cameraLatAngle = 0;
-float cameraLongAngle = 0;
+float cameraLatAngle = 1.5;
+float cameraLongAngle = 1.5;
 
 int verts, faces, norms;    // Number of vertices, faces and normals in the system
 point *vertList, *normList; // Vertex and Normal Lists
@@ -164,25 +172,20 @@ void	display(void)
     // Clear the background
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-    //if (PERSPECTIVE) {
-		glLoadIdentity();
 
-		//float distance = sqrt(xcamera * xcamera + ycamera * ycamera + zcamera * zcamera);
-		// Set the camera position, orientation and target
-		gluLookAt(cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),cameraDistance*cos(cameraLatAngle), 0,0,0, 0,0,1);
-    //}
+	glLoadIdentity();
+
+	// Set the camera position, orientation and target
+	gluLookAt(
+		cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),	//x pos
+		cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),	//y pos
+		cameraDistance*cos(cameraLatAngle),							//z pos
+		0,0,0,														//target (origin)
+		0,0,1														//"up" vector (z)
+		);
+
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // Draw a red rectangle
-    glColor3f(1,0,0);
-	glBegin(GL_POLYGON);
-		glVertex3f(0.8,0.8,-0.8);
-		glVertex3f(0.8,-0.8,-0.8);
-		glVertex3f(-0.8,-0.8,-0.0);
-		glVertex3f(-0.8,0.8,-0.0);
-    glEnd();
-
 
 	if(showAxes){
 		//try drawing some axes
@@ -199,33 +202,27 @@ void	display(void)
 		glEnd();
 	}
 
+	if(showObj){
+		// Draw a blue object
+		glColor3f(0,0,1);
+		glBegin(GL_TRIANGLES);
+		for(int face = 0; face < faces; face++)
+		{
+			faceStruct myFace = faceList[face];
 
-    // Draw a blue tetraheadron
-    glColor3f(0,0,1);
-    glBegin(GL_TRIANGLES);
-		glVertex3f(0.0,1.6,0.0);
-		glVertex3f(0.8,-0.4,0.8);
-		glVertex3f(-0.8,-0.4,0.8);
+			point v = vertList[myFace.v1];
+			glVertex3f(v.x,v.y,v.z);
+		
+			v = vertList[myFace.v2];
+			glVertex3f(v.x,v.y,v.z);
+		
+			v = vertList[myFace.v3];
+			glVertex3f(v.x,v.y,v.z);
+		}
 
-		glVertex3f(0.0,1.6,0.0);
-		glVertex3f(0.8,-0.4,0.8);
-		glVertex3f(0.0,-0.4,-0.8);
 
-		glVertex3f(0.0,1.6,0.0);
-		glVertex3f(0.0,-0.4,-0.8);
-		glVertex3f(-0.8,-0.4,0.8);
-
-		glVertex3f(-0.8,-0.4,0.8);
-		glVertex3f(0.8,-0.4,0.8);
-		glVertex3f(0.0,-0.4,-0.8);
-    glEnd();
-
-    // Draw a green line
-    glColor3f(0,1,0);
-    glBegin(GL_LINES);
-		glVertex3f(1.8,1.8,0.0);
-		glVertex3f(0.1,0.1,0.0);
-    glEnd();
+		glEnd();
+	}
 
     // (Note that the origin is lower left corner)
     // (Note also that the window spans (0,1) )
@@ -280,17 +277,18 @@ void	mouseMotion(int x, int y)
 {
 	if(panMouse)
 	{
-		cameraLongAngle += 0.01 * (x-lastx);
+		cameraLongAngle -= 0.01 * (x-lastx);
 		if(cameraLongAngle < 0) cameraLongAngle += 2*PI;
 		else if(cameraLongAngle > 2*PI) cameraLongAngle -= 2*PI;
 
-		cameraLatAngle += 0.005 * (y-lasty);
-		if(cameraLatAngle < 0.01) cameraLatAngle = 0.01;
-		else if (cameraLatAngle > PI-.01) cameraLatAngle = PI-.01;
+		cameraLatAngle -= 0.005 * (y-lasty);
+		if(cameraLatAngle < 0.1) cameraLatAngle = 0.1;
+		else if (cameraLatAngle > PI-.1) cameraLatAngle = PI-.1;
 	}
 	if(zoomMouse)
 	{
 		cameraDistance += 0.005 * (y-lasty);
+		if (cameraDistance < .1) cameraDistance = .1;
 	}
 	lastx = x;
 	lasty = y;
@@ -330,11 +328,19 @@ void	keyboard(unsigned char key, int x, int y)
 			glLoadIdentity();
 		}
 		break;
+	case 's':
+	case 'S':
+		if(showObj) showObj = OFF;
+		else showObj = ON;
+		break;
 	case 'a':
 	case 'A':
 		if(showAxes) showAxes = OFF;
 		else showAxes = ON;
 		break;
+	case 'q':
+	case 'Q':
+		exit(0);
     default:
 		break;
     }
@@ -348,7 +354,7 @@ void	keyboard(unsigned char key, int x, int y)
 int main(int argc, char* argv[])
 {
 	cameraDistance=5;
-
+	meshReader("../demo/helicopter.obj", 1);
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
