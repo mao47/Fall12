@@ -31,6 +31,45 @@ typedef struct _faceStruct {
 //pi
 float PI = atan((float)1)*4;
 
+
+
+
+
+
+
+
+float M[4][4];
+
+
+void multM(float left[][4], float right[][4])
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //mouse movement vars
 int lastx=0; int lasty = 0;
 int panMouse = OFF;
