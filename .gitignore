@@ -2,6 +2,10 @@
 bin
 obj
 Debug
+*.sdf
+*.suo
+ipch
+*.opensdf
 
 # mstest test results
 TestResults
