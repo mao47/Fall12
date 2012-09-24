@@ -7,10 +7,12 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
+#include <array>
+
+typedef std :: array <std :: array <float, 4>,4> MATRIX;
 
 #define ON 1
 #define OFF 0
-
 
 // Global variables
 int window_width, window_height;    // Window dimensions
@@ -32,42 +34,11 @@ typedef struct _faceStruct {
 float PI = atan((float)1)*4;
 
 
-
-
-
-
-
-
-float M[4][4];
-
-
-void multM(float left[][4], float right[][4])
-{
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+MATRIX M;
+float IDENTITY[][4] = {{1,0,0,0},
+					   {0,1,0,0},
+					   {0,0,1,0},
+					   {0,0,0,1}};
 
 
 //mouse movement vars
@@ -392,6 +363,10 @@ void	keyboard(unsigned char key, int x, int y)
 // Here's the main
 int main(int argc, char* argv[])
 {
+	for (int i = 0; i < 4; i++)
+		for(int j = 0; j < 4; j ++)
+			M[i][j] = IDENTITY[i][j];
+
 	cameraDistance=5;
 	meshReader("../demo/helicopter.obj", 1);
     // Initialize GLUT

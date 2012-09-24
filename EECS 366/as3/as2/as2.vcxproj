@@ -82,11 +82,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="as2.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="camera.cpp" />
+=======
+    <ClCompile Include="MatrixMath.cpp" />
+>>>>>>> 6720a11... Added Matrix math
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="glut.h" />
+    <ClInclude Include="MatrixMath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
