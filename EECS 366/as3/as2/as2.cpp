@@ -53,12 +53,6 @@ int zoomMouse = OFF;
 
 //what to display
 int showAxes = ON;
-int showObj = ON;
-
-//camera vars
-float cameraDistance = 5;
-float cameraLatAngle = 1.5;
-float cameraLongAngle = 1.5;
 
 int verts, faces, norms;    // Number of vertices, faces and normals in the system
 point *vertList, *normList; // Vertex and Normal Lists
@@ -203,41 +197,52 @@ void	display(void)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if(showAxes){
+		point o= {0,0,0};
+		point x= {1,0,0};
+		point y= {0,1,0};
+		point z= {0,0,1};
+		
+		o = multiplyP(final, o);
+		x = multiplyP(final, x);
+		y = multiplyP(final, y);
+		z = multiplyP(final, z);
+
 		//try drawing some axes
 		glBegin (GL_LINES);
 		glColor3f (0,1,1); // X axis color.
-		glVertex3f (0,0,0);
-		glVertex3f (1,0,0 ); 
+		
+		glVertex3f (o.x,o.y,o.z);
+		glVertex3f (x.x,x.y,x.z ); 
 		glColor3f (1,0,1); // Y axis color.
-		glVertex3f (0,0,0);
-		glVertex3f (0,1,0 );
+		glVertex3f (o.x,o.y,o.z);
+		glVertex3f (y.x,y.y,y.z );
 		glColor3f (1,1,0); // z axis color.
-		glVertex3f (0,0,0);
-		glVertex3f (0,0,1 ); 
+		glVertex3f (o.x,o.y,o.z);
+		glVertex3f (z.x,z.y,z.z ); 
 		glEnd();
 	}
 
-	if(showObj){
-		// Draw a blue object
-		glColor3f(0,0,1);
-		glBegin(GL_TRIANGLES);
-		for(int face = 0; face < faces; face++)
-		{
-			faceStruct myFace = faceList[face];
 
-			point v = multiplyP(final, vertList[myFace.v1]);
-			glVertex3f(v.x,v.y,v.z);
+	// Draw a blue object
+	glColor3f(0,0,1);
+	glBegin(GL_TRIANGLES);
+	for(int face = 0; face < faces; face++)
+	{
+		faceStruct myFace = faceList[face];
+
+		point v = multiplyP(final, vertList[myFace.v1]);
+		glVertex3f(v.x,v.y,v.z);
 		
-			v = multiplyP(final, vertList[myFace.v2]);
-			glVertex3f(v.x,v.y,v.z);
+		v = multiplyP(final, vertList[myFace.v2]);
+		glVertex3f(v.x,v.y,v.z);
 		
-			v = multiplyP(final, vertList[myFace.v3]);
-			glVertex3f(v.x,v.y,v.z);
-		}
-
-
-		glEnd();
+		v = multiplyP(final, vertList[myFace.v3]);
+		glVertex3f(v.x,v.y,v.z);
 	}
+
+
+	glEnd();
+	
 
     // (Note that the origin is lower left corner)
     // (Note also that the window spans (0,1) )
@@ -282,7 +287,7 @@ void	mouseButton(int button,int state,int x,int y)
 		if(state==0) zoomMouse=ON;
 		else zoomMouse=OFF;
 	}
-	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
+//	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
 }
 
 
@@ -298,8 +303,8 @@ void	mouseMotion(int x, int y)
 	}
 	if(zoomMouse)
 	{
-		cameraDistance += 0.005 * (y-lasty);
-		if (cameraDistance < .1) cameraDistance = .1;
+		//cameraDistance += 0.005 * (y-lasty);
+		//if (cameraDistance < .1) cameraDistance = .1;
 	}
 	lastx = x;
 	lasty = y;
@@ -340,11 +345,6 @@ void	keyboard(unsigned char key, int x, int y)
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 		}
-		break;
-	case 's':
-	case 'S':
-		if(showObj) showObj = OFF;
-		else showObj = ON;
 		break;
 	case 'a':
 	case 'A':
@@ -466,7 +466,7 @@ int main(int argc, char* argv[])
 		for(int j = 0; j < 4; j ++)
 			M[i][j] = IDENTITY[i][j];
 
-	cameraDistance=5;
+//	cameraDistance=5;
 	meshReader("helicopter.obj", 1);
     // Initialize GLUT
     glutInit(&argc, argv);
