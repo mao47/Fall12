@@ -45,7 +45,7 @@ float IDENTITY[][4] = {{1,0,0,0},
 					   {0,0,0,1}};
 
 Camera camera;
-bool camToggle = false;qq
+bool camToggle = false;
 //mouse movement vars
 int lastx=0; int lasty = 0;
 int swivelMouse = OFF;
