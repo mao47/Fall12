@@ -4,9 +4,11 @@ class Camera
 {
 private:	
 	point N, U, P;
-	point n, u, v;
 public:
 	int f;
 
-	void swivel(float x, float y);
+	Camera();
+	void swivel(float horizontal, float vertical);
+	MATRIX ViewTransform();
+
 };
