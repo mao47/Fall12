@@ -1,12 +1,12 @@
 #include <array>
-
+#ifndef DEFINE_TEMPLATES
+#define DEFINE_TEMPLATES
 typedef std :: array <std :: array <float, 4>,4> MATRIX;
-typedef struct point {
+typedef struct _point {
   float x,y,z;
 } point;
 
-#ifndef DEFINE_TEMPLATES
-#define DEFINE_TEMPLATES
+
 //returns multiplication of two 4x4 matrices
 template <typename l, typename r>
 MATRIX multiply (l left, r right)

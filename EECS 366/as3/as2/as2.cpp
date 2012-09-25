@@ -23,9 +23,9 @@ int PERSPECTIVE = OFF;
 
 // Vertex and Face data structure sued in the mesh reader
 // Feel free to change them
-typedef struct point {
-  float x,y,z;
-} point;
+//typedef struct point {
+//  float x,y,z;
+//} point;
 
 typedef struct _faceStruct {
   int v1,v2,v3;
