@@ -417,10 +417,10 @@ void	keyboard(unsigned char key, int x, int y)
 		M = rotateZ(M, ROTATE_SPEED, true);
 		break;
 	case '=':
-		M = scale(M, SCALE_RATIO);
+		M = scale(M, 1+SCALE_RATIO);
 		break;
 	case '-':
-		M = scale(M, SCALE_RATIO);
+		M = scale(M, 1-SCALE_RATIO);
 		break;
 
 	//object transformations
