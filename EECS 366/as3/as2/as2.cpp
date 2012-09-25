@@ -184,14 +184,7 @@ void	display(void)
 	glLoadIdentity();
 	
 	MATRIX view = camera.ViewTransform();
-	// Set the camera position, orientation and target
-	//gluLookAt(
-	//	cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),	//x pos
-	//	cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),	//y pos
-	//	cameraDistance*cos(cameraLatAngle),							//z pos
-	//	0,0,0,														//target (origin)
-	//	0,0,1														//"up" vector (z)
-	//	);
+
 	MATRIX final = multiply(view, M);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -210,7 +203,6 @@ void	display(void)
 		//try drawing some axes
 		glBegin (GL_LINES);
 		glColor3f (0,1,1); // X axis color.
-		
 		glVertex3f (o.x,o.y,o.z);
 		glVertex3f (x.x,x.y,x.z ); 
 		glColor3f (1,0,1); // Y axis color.
@@ -282,6 +274,10 @@ void	mouseButton(int button,int state,int x,int y)
 		if(state==0) swivelMouse=ON;
 		else swivelMouse=OFF;
 	}
+	else if(button == 1)
+	{
+
+	}
 	else if(button == 2)
 	{
 		if(state==0) zoomMouse=ON;
@@ -297,9 +293,7 @@ void	mouseMotion(int x, int y)
 {
 	if(swivelMouse)
 	{
-
 		camera.swivel(x-lastx,y-lasty);
-
 	}
 	if(zoomMouse)
 	{
@@ -311,6 +305,14 @@ void	mouseMotion(int x, int y)
 	glutPostRedisplay();
 }
 
+
+void reset()
+{
+	camera = Camera();
+	for (int i = 0; i < 4; i++)
+		for(int j = 0; j < 4; j ++)
+			M[i][j] = IDENTITY[i][j];
+}
 
 // This function is called whenever there is a keyboard input
 // key is the ASCII value of the key pressed
@@ -350,6 +352,9 @@ void	keyboard(unsigned char key, int x, int y)
 	case 'A':
 		if(showAxes) showAxes = OFF;
 		else showAxes = ON;
+		break;
+	case 'r':
+		reset();
 		break;
 	case 'q':
 	case 'Q':
@@ -457,14 +462,11 @@ void	keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-
 // Here's the main
 int main(int argc, char* argv[])
 {
-	camera = Camera();
-	for (int i = 0; i < 4; i++)
-		for(int j = 0; j < 4; j ++)
-			M[i][j] = IDENTITY[i][j];
+
+	reset();
 
 //	cameraDistance=5;
 	meshReader("helicopter.obj", 1);
