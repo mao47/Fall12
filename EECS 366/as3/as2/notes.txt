@@ -1,0 +1,8 @@
+todo:
+- I made a bunch of terrible terrible variable names in camera.cpp (maybe other places)
+- camera swivel doesn't work horizontal, seems to work okay vertical (but might not)
+- camera move in viewing axis
+- camera move perpendicular to viewing axis
+- scaling properly
+- object and world coord axes...... I think world only gets the viewing transformation.. think about it
+- verify camera looking at object coords
