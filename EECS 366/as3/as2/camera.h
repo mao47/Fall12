@@ -10,6 +10,7 @@ public:
 
 	Camera();
 	void swivel(float horizontal, float vertical);
+	void lookAt(point p);
 	MATRIX ViewTransform();
 
 };

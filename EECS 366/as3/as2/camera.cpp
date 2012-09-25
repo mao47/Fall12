@@ -10,6 +10,15 @@ Camera::Camera()
 	RATIO = 0.025;
 }
 
+void Camera::lookAt(point p)
+{
+	//TODO: MORE TERRIBLE NAMES
+	point direction = {p.x - P.x, p.y - P.y, p.z - P.z};	//subtract camera position from target so we don't need to multiply by -1 (look at -N direction)
+	float dist = magnitude(direction);
+	N.x = direction.x / dist;
+	N.y = direction.y / dist;
+	N.z = direction.z / dist;
+}
 void Camera::swivel(float x, float y)
 {
 	//TODO: SUPER CONFUSING VARIABLE NAME

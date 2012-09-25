@@ -45,6 +45,7 @@ float IDENTITY[][4] = {{1,0,0,0},
 					   {0,0,0,1}};
 
 Camera camera;
+bool camToggle = false;qq
 //mouse movement vars
 int lastx=0; int lasty = 0;
 int swivelMouse = OFF;
@@ -354,7 +355,19 @@ void	keyboard(unsigned char key, int x, int y)
 	case 'Q':
 		exit(0);
 		break;
-
+	case 'c':
+		if(camToggle)
+		{
+			camera.lookAt(p);
+		}
+		else
+		{
+			//todo: does this work
+			p.x = M[0][3];	p.y = M[1][3];	p.z = M[2][3];
+			camera.lookAt(p);
+		}
+		camToggle = !camToggle;
+		break;
 	//world transformations
 	case '4':
 		p.x = -TRANSLATE_SPEED;
