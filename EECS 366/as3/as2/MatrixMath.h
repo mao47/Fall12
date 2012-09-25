@@ -22,3 +22,7 @@ MATRIX multiply (l left, r right)
 }
 
 MATRIX translateW(MATRIX M, point p);
+MATRIX rotateX(MATRIX M, float angle, bool isWorld);
+MATRIX rotateY(MATRIX M, float angle, bool isWorld);
+MATRIX rotateZ(MATRIX M, float angle, bool isWorld);
+MATRIX scale(MATRIX M, float scaling);
