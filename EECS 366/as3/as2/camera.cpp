@@ -7,20 +7,34 @@ Camera::Camera()
 	point N = {0,0,-1};
 	point U = {0,1,0};
 	point P = {0,0,5};
+	RATIO = 0.1;
 }
 
 void Camera::swivel(float x, float y)
 {
+	//TODO: SUPER CONFUSING VARIABLE NAMES
 
+	float angle = x * RATIO;
 	//rotate N around (object) y axis (around U) by x
 
 	// N = N * Ry
+	float ty [4][4] = {{cos(angle),0,sin(angle),0},
+					  {0,1,0,0},
+					  {-1*sin(angle),0,cos(angle),0},
+					  {0,0,0,1}};
+	N = multiplyP(ty, N);
 
 	//rotate N and U around x axis (horizontal) by y
-	
+	angle = y * RATIO;
+	float tx [4][4] = {{1,0,0,0},
+					  {0,cos(angle),-1*sin(angle),0},
+					  {0,sin(angle),cos(angle),0},
+					  {0,0,0,1}};
 	// N = N * Rx
-	// U = U * Rx
+	N = multiplyP(tx, N);
 
+	// U = U * Rx
+	U = multiplyP(tx, U);
 }
 
 MATRIX Camera::ViewTransform()
