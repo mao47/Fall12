@@ -1,3 +1,5 @@
+#include "MatrixMath.h"
+
 class Camera
 {
 private:	
