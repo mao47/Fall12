@@ -11,7 +11,7 @@
 #include "MatrixMath.h"
 #include "camera.h"
 
-typedef std :: array <std :: array <float, 4>,4> MATRIX;
+//typedef std :: array <std :: array <float, 4>,4> MATRIX;
 
 #define ON 1
 #define OFF 0
@@ -35,7 +35,9 @@ typedef struct _faceStruct {
 //pi
 float PI = atan((float)1)*4;
 
-
+float TRANSLATE_SPEED = .1;
+float ROTATE_SPEED = 0.1;
+float SCALE_RATIO = 0.1;
 MATRIX M;
 float IDENTITY[][4] = {{1,0,0,0},
 					   {0,1,0,0},
@@ -45,7 +47,7 @@ float IDENTITY[][4] = {{1,0,0,0},
 Camera camera;
 //mouse movement vars
 int lastx=0; int lasty = 0;
-int panMouse = OFF;
+int swivelMouse = OFF;
 int zoomMouse = OFF;
 
 //what to display
@@ -184,18 +186,18 @@ void	display(void)
     // Clear the background
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-
 	glLoadIdentity();
-
+	
+	MATRIX view = camera.ViewTransform();
 	// Set the camera position, orientation and target
-	gluLookAt(
-		cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),	//x pos
-		cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),	//y pos
-		cameraDistance*cos(cameraLatAngle),							//z pos
-		0,0,0,														//target (origin)
-		0,0,1														//"up" vector (z)
-		);
-
+	//gluLookAt(
+	//	cameraDistance*cos(cameraLongAngle)*sin(cameraLatAngle),	//x pos
+	//	cameraDistance*sin(cameraLongAngle)*sin(cameraLatAngle),	//y pos
+	//	cameraDistance*cos(cameraLatAngle),							//z pos
+	//	0,0,0,														//target (origin)
+	//	0,0,1														//"up" vector (z)
+	//	);
+	MATRIX final = multiply(view, M);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -222,13 +224,13 @@ void	display(void)
 		{
 			faceStruct myFace = faceList[face];
 
-			point v = vertList[myFace.v1];
+			point v = multiplyP(final, vertList[myFace.v1]);
 			glVertex3f(v.x,v.y,v.z);
 		
-			v = vertList[myFace.v2];
+			v = multiplyP(final, vertList[myFace.v2]);
 			glVertex3f(v.x,v.y,v.z);
 		
-			v = vertList[myFace.v3];
+			v = multiplyP(final, vertList[myFace.v3]);
 			glVertex3f(v.x,v.y,v.z);
 		}
 
@@ -271,8 +273,8 @@ void	mouseButton(int button,int state,int x,int y)
 	lasty = y;
 	if(button == 0) //left button: pan
 	{
-		if(state==0) panMouse=ON;
-		else panMouse=OFF;
+		if(state==0) swivelMouse=ON;
+		else swivelMouse=OFF;
 	}
 	else if(button == 2)
 	{
@@ -287,7 +289,7 @@ void	mouseButton(int button,int state,int x,int y)
 // x and y are the location of the mouse (in window-relative coordinates)
 void	mouseMotion(int x, int y)
 {
-	if(panMouse)
+	if(swivelMouse)
 	{
 
 		camera.swivel(x-lastx,y-lasty);
@@ -309,6 +311,8 @@ void	mouseMotion(int x, int y)
 // x and y are the location of the mouse
 void	keyboard(unsigned char key, int x, int y)
 {
+	point p = {0,0,0};
+	MATRIX V = camera.ViewTransform();
     switch(key) {
     case '':                           /* Quit */
 		exit(1);
@@ -349,6 +353,89 @@ void	keyboard(unsigned char key, int x, int y)
 	case 'q':
 	case 'Q':
 		exit(0);
+		break;
+
+	//world transformations
+	case '4':
+		p.x = -TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '6':
+		p.x = TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '8':
+		p.y = TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '2':
+		p.y = -TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '9':
+		p.z = TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '1':
+		p.z = -TRANSLATE_SPEED;
+		M = translate(M, p, true);
+		break;
+	case '[':
+		M = rotateX(M, -ROTATE_SPEED, true);
+		break;
+	case ']':
+		M = rotateX(M, ROTATE_SPEED, true);
+		break;
+	case ';':
+		M = rotateY(M, -ROTATE_SPEED, true);
+		break;
+	case '\'':
+		M = rotateY(M, ROTATE_SPEED, true);
+		break;
+	case '.':
+		M = rotateZ(M, -ROTATE_SPEED, true);
+		break;
+	case '/':
+		M = rotateZ(M, ROTATE_SPEED, true);
+		break;
+	case '=':
+		M = scale(M, SCALE_RATIO);
+		break;
+	case '-':
+		M = scale(M, SCALE_RATIO);
+		break;
+
+	//object transformations
+	case 'i':
+		M = rotateX(M, -ROTATE_SPEED, false);
+		break;
+	case 'o':
+		M = rotateX(M, ROTATE_SPEED, false);
+		break;
+	case 'k':
+		M = rotateY(M, -ROTATE_SPEED, false);
+		break;
+	case 'l':
+		M = rotateY(M, ROTATE_SPEED, false);
+		break;
+	case 'm':
+		M = rotateZ(M, -ROTATE_SPEED, false);
+		break;
+	case ',':
+		M = rotateZ(M, ROTATE_SPEED, false);
+		break;
+	case 'd':
+		printf("\nM:\n");
+		for(int i = 0; i < 4; i ++){
+			printf("%d, %d, %d, %d\n", M[i][0], M[i][1], M[i][2], M[i][3]);
+		}
+		
+		
+		printf("\nV:\n");
+		for(int i = 0; i < 4; i ++){
+			printf("%d, %d, %d, %d\n", V[i][0], V[i][1], V[i][2], V[i][3]);
+		}
+		break;
     default:
 		break;
     }

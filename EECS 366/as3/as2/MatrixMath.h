@@ -1,6 +1,7 @@
 #include <array>
 #ifndef DEFINE_TEMPLATES
 #define DEFINE_TEMPLATES
+
 typedef std :: array <std :: array <float, 4>,4> MATRIX;
 typedef struct _point {
   float x,y,z;
@@ -33,11 +34,12 @@ point multiplyP (l mat, r p)
 	result.z = mat[2][0] * p.x + mat[2][1] * p.y + mat[2][2] * p.z + mat[2][3];
 	return result;
 }
-#endif
+
 point crossProd(point a, point b);
 float magnitude(point a);
-MATRIX translateW(MATRIX M, point p);
+MATRIX translate(MATRIX M, point p, bool isWorld);
 MATRIX rotateX(MATRIX M, float angle, bool isWorld);
 MATRIX rotateY(MATRIX M, float angle, bool isWorld);
 MATRIX rotateZ(MATRIX M, float angle, bool isWorld);
 MATRIX scale(MATRIX M, float scaling);
+#endif

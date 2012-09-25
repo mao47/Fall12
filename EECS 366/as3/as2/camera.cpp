@@ -4,15 +4,15 @@
 
 Camera::Camera()
 {
-	point N = {0,0,-1};
-	point U = {0,1,0};
-	point P = {0,0,5};
-	RATIO = 0.1;
+	N.x=0;	N.y=0;	N.z=-1;
+	U.x=0;	U.y=1;	U.z=0;
+	P.x=0;	P.y=0;	P.z=5;
+	RATIO = 0.025;
 }
 
 void Camera::swivel(float x, float y)
 {
-	//TODO: SUPER CONFUSING VARIABLE NAMES
+	//TODO: SUPER CONFUSING VARIABLE NAME
 
 	float angle = x * RATIO;
 	//rotate N around (object) y axis (around U) by x
@@ -25,7 +25,7 @@ void Camera::swivel(float x, float y)
 	N = multiplyP(ty, N);
 
 	//rotate N and U around x axis (horizontal) by y
-	angle = y * RATIO;
+	angle = -y * RATIO;
 	float tx [4][4] = {{1,0,0,0},
 					  {0,cos(angle),-1*sin(angle),0},
 					  {0,sin(angle),cos(angle),0},
