@@ -190,28 +190,54 @@ void	display(void)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if(showAxes){
-		point o= {0,0,0};
-		point x= {1,0,0};
-		point y= {0,1,0};
-		point z= {0,0,1};
+		{
+			point o= {0,0,0};
+			point x= {1,0,0};
+			point y= {0,1,0};
+			point z= {0,0,1};
 		
-		o = multiplyP(final, o);
-		x = multiplyP(final, x);
-		y = multiplyP(final, y);
-		z = multiplyP(final, z);
+			o = multiplyP(final, o);
+			x = multiplyP(final, x);
+			y = multiplyP(final, y);
+			z = multiplyP(final, z);
 
-		//try drawing some axes
-		glBegin (GL_LINES);
-		glColor3f (0,1,1); // X axis color.
-		glVertex3f (o.x,o.y,o.z);
-		glVertex3f (x.x,x.y,x.z ); 
-		glColor3f (1,0,1); // Y axis color.
-		glVertex3f (o.x,o.y,o.z);
-		glVertex3f (y.x,y.y,y.z );
-		glColor3f (1,1,0); // z axis color.
-		glVertex3f (o.x,o.y,o.z);
-		glVertex3f (z.x,z.y,z.z ); 
-		glEnd();
+			//try drawing some axes
+			glBegin (GL_LINES);
+			glColor3f (0,1,1); // X axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (x.x,x.y,x.z ); 
+			glColor3f (1,0,1); // Y axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (y.x,y.y,y.z );
+			glColor3f (1,1,0); // z axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (z.x,z.y,z.z ); 
+			glEnd();
+		}
+		{
+			point o= {0,0,0};
+			point x= {1,0,0};
+			point y= {0,1,0};
+			point z= {0,0,1};
+		
+			o = multiplyP(view, o);
+			x = multiplyP(view, x);
+			y = multiplyP(view, y);
+			z = multiplyP(view, z);
+
+			//try drawing some axes
+			glBegin (GL_LINES);
+			glColor3f (0,1,1); // X axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (x.x,x.y,x.z ); 
+			glColor3f (1,0,1); // Y axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (y.x,y.y,y.z );
+			glColor3f (1,1,0); // z axis color.
+			glVertex3f (o.x,o.y,o.z);
+			glVertex3f (z.x,z.y,z.z ); 
+			glEnd();
+		}
 	}
 
 
