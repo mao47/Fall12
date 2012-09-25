@@ -8,6 +8,8 @@
 #include <GL/glu.h>
 #include <math.h>
 #include <array>
+#include "MatrixMath.h"
+#include "camera.h"
 
 typedef std :: array <std :: array <float, 4>,4> MATRIX;
 
@@ -21,7 +23,7 @@ int PERSPECTIVE = OFF;
 
 // Vertex and Face data structure sued in the mesh reader
 // Feel free to change them
-typedef struct _point {
+typedef struct point {
   float x,y,z;
 } point;
 
@@ -40,7 +42,7 @@ float IDENTITY[][4] = {{1,0,0,0},
 					   {0,0,1,0},
 					   {0,0,0,1}};
 
-
+Camera camera;
 //mouse movement vars
 int lastx=0; int lasty = 0;
 int panMouse = OFF;
@@ -287,13 +289,9 @@ void	mouseMotion(int x, int y)
 {
 	if(panMouse)
 	{
-		cameraLongAngle -= 0.01 * (x-lastx);
-		if(cameraLongAngle < 0) cameraLongAngle += 2*PI;
-		else if(cameraLongAngle > 2*PI) cameraLongAngle -= 2*PI;
 
-		cameraLatAngle -= 0.005 * (y-lasty);
-		if(cameraLatAngle < 0.1) cameraLatAngle = 0.1;
-		else if (cameraLatAngle > PI-.1) cameraLatAngle = PI-.1;
+		camera.swivel(x-lastx,y-lasty);
+
 	}
 	if(zoomMouse)
 	{
@@ -363,12 +361,13 @@ void	keyboard(unsigned char key, int x, int y)
 // Here's the main
 int main(int argc, char* argv[])
 {
+	camera = Camera();
 	for (int i = 0; i < 4; i++)
 		for(int j = 0; j < 4; j ++)
 			M[i][j] = IDENTITY[i][j];
 
 	cameraDistance=5;
-	meshReader("../demo/helicopter.obj", 1);
+	meshReader("helicopter.obj", 1);
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);

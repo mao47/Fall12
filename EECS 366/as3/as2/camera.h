@@ -4,6 +4,7 @@ class Camera
 {
 private:	
 	point N, U, P;
+	float RATIO;
 public:
 	int f;
 

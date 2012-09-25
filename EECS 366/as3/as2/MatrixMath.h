@@ -1,10 +1,12 @@
 #include <array>
 
 typedef std :: array <std :: array <float, 4>,4> MATRIX;
-typedef struct _point {
+typedef struct point {
   float x,y,z;
 } point;
 
+#ifndef DEFINE_TEMPLATES
+#define DEFINE_TEMPLATES
 //returns multiplication of two 4x4 matrices
 template <typename l, typename r>
 MATRIX multiply (l left, r right)
@@ -31,7 +33,7 @@ point multiplyP (l mat, r p)
 	result.z = mat[2][0] * p.x + mat[2][1] * p.y + mat[2][2] * p.z + mat[2][3];
 	return result;
 }
-
+#endif
 point crossProd(point a, point b);
 float magnitude(point a);
 MATRIX translateW(MATRIX M, point p);
