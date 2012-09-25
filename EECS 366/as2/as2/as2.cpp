@@ -287,7 +287,7 @@ void	mouseMotion(int x, int y)
 	}
 	if(zoomMouse)
 	{
-		cameraDistance += 0.005 * (y-lasty);
+		cameraDistance += 0.05 * (y-lasty);
 		if (cameraDistance < .1) cameraDistance = .1;
 	}
 	lastx = x;
@@ -353,8 +353,11 @@ void	keyboard(unsigned char key, int x, int y)
 // Here's the main
 int main(int argc, char* argv[])
 {
+
+	meshReader("helicopter.obj", 1);
+
 	cameraDistance=5;
-	meshReader("../demo/helicopter.obj", 1);
+	
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
