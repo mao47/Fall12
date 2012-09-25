@@ -90,6 +90,9 @@
     <ClInclude Include="glut.h" />
     <ClInclude Include="MatrixMath.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="notes.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
