@@ -8,12 +8,13 @@ Camera::Camera()
 	
 	N.x=0;	N.y=0;	N.z=-1; //why neg?
 	U.x=0;	U.y=1;	U.z=0;
-	P.x=0;	P.y=0;	P.z=5;
+	P.x=3;	P.y=2;	P.z=5;
 
-	x.x=1;	x.y=0;	x.z=5;
-	y.x=0;	y.y=1;	y.z=5;
-	z.x=0;	z.y=0;	z.z=4; //?
-	RATIO = 0.025;
+	x.x=1+P.x;	x.y=P.y;	x.z=P.z;
+	y.x=P.x;	y.y=P.y+1;	y.z=P.z;
+	z.x=P.x;	z.y=P.y;	z.z=P.z-1; //?
+	RATIO = 0.015;
+
 }
 
 void Camera::lookAt(point p)
@@ -24,6 +25,15 @@ void Camera::lookAt(point p)
 	N.x = direction.x / dist;
 	N.y = direction.y / dist;
 	N.z = direction.z / dist;
+}
+
+point normalize(point p)
+{
+	float d = magnitude(p);
+	p.x = p.x/d;
+	p.y = p.y/d;
+	p.z = p.z/d;
+	return p;
 }
 void Camera::swivel(float xa, float ya)
 {
@@ -36,52 +46,15 @@ void Camera::swivel(float xa, float ya)
 	{0,0,1,-P.z},
 	{0,0,0,1}};
 
-	////translate to origin
+	//get axis vectors (rather than points)
 	point tempx = multiplyP(transO, x);
 	point tempy = multiplyP(transO, y);
 	point tempz = multiplyP(transO, z);
+	printf("x: %f, %f, %f\ny:%f, %f, %f\nz:%f, %f, %f\n", tempx.x, tempx.y, tempx.z, tempy.x, tempy.y, tempy.z, tempz.x, tempz.y, tempz.z);
 
-	/*
-	goal:
-	up -> y
-	look at -> z
-	u x n -> x
-
-
-	the (horizontal) rotation vector is now tempy to rotate horizontally in the camera's frame (where tempy is up)
-	the vertical rotation vector will be tempx
-	*/
 	//  http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/
-	//float zdist = sqrt(tempy.x*tempy.x + tempy.y*tempy.y);
-	//float d = magnitude(tempy);
-	//float transXYplane2Zaxis [4][4] = {{tempy.z/d, 0, -zdist/d, 0},
-	//								{0, 1, 0, 0},
-	//								{zdist/d, 0, tempy.z/d, 0},
-	//								{0, 0, 0, 1}};
-	//MATRIX T;
-	//if(zdist > 0){
-	//	float trans2xyplane [4][4] = {{tempy.x/zdist, tempy.y/zdist,0,0},
-	//								{-tempy.y/zdist, tempy.x/zdist,0,0},
-	//								{0,0,1,0},
-	//								{0,0,0,1}};
-	//	T = multiply(transXYplane2Zaxis, trans2xyplane);
-	//}
-	//else
-	//{
-	//	for(int i=0; i<4; i++)
-	//		for(int j=0; j<4; j++)
-	//			T[i][j] = transXYplane2Zaxis[i][j];
-	//}
 
-	//at this point T will rotate the coords to the z axis
-
-
-
-
-
-	///wait...
-
-
+	//horizontal rotation
 	float cosx = cos(angle);
 	float sinx = sin(angle);
 	float x1 = tempy.x;
@@ -96,15 +69,14 @@ void Camera::swivel(float xa, float ya)
 		{x1*z1*(1-cosx)-y1*sinx,	y1*z1*(1-cosx)+x1*sinx,		z2 + (x2+y2)*cosx,			(P.z*(x2+y2)-z1*(P.x*x1+P.y*y1))*(1-cosx)+(P.x*y1-P.y*x1)*sinx},
 		{0,0,0,1}};
 
-	//
-	//x = multiplyP(t, x);
-	//y = multiplyP(t, y);
-	//z = multiplyP(t, z);
+	
+	x = multiplyP(t, x);
+	y = multiplyP(t, y);
+	z = multiplyP(t, z);
 
 
 
-
-
+	//vertical rotation
 	angle = -ya*RATIO;
 
 	cosx = cos(angle);
@@ -121,43 +93,37 @@ void Camera::swivel(float xa, float ya)
 		{x1*z1*(1-cosx)-y1*sinx,	y1*z1*(1-cosx)+x1*sinx,		z2 + (x2+y2)*cosx,			(P.z*(x2+y2)-z1*(P.x*x1+P.y*y1))*(1-cosx)+(P.x*y1-P.y*x1)*sinx},
 		{0,0,0,1}};
 
-	MATRIX T = multiply(v, t);
+	//MATRIX T = multiply(v, t);
 
 	x = multiplyP(v, x);
 	y = multiplyP(v, y);
 	z = multiplyP(v, z);
-
-
-	//point yp = {-U.x, U.y, -U.x};	//where the y axis goes
-
-	////rotate U to world y
-	//float roty [4][4] = {{0,-U.x,0,0},
-	//{0,U.y,0,0},
-	//{0,-U.z,0,0},
-	//{0,0,0,1}};
-	//
-
 	
-	//rotate N around (object) y axis (around U) by x
 
-	// N = N * Ry
-	//float ty [4][4] = {{cos(angle),0,sin(angle),0},
-	//				  {0,1,0,0},
-	//				  {-1*sin(angle),0,cos(angle),0},
-	//				  {0,0,0,1}};
-	//N = multiplyP(ty, N);
 
-	////rotate N and U around x axis (horizontal) by y
-	//angle = -ya * RATIO;
-	//float tx [4][4] = {{1,0,0,0},
-	//				  {0,cos(angle),-1*sin(angle),0},
-	//				  {0,sin(angle),cos(angle),0},
-	//				  {0,0,0,1}};
-	//// N = N * Rx
-	//N = multiplyP(tx, N);
 
-	//// U = U * Rx
-	//U = multiplyP(tx, U);
+
+	//normalize all the points
+	point xp = {x.x-P.x,x.y-P.y,x.z-P.z};
+	xp = normalize(xp);
+	x.x=P.x+xp.x;
+	x.y=P.y+xp.y;
+	x.z=P.z+xp.z;
+
+
+	point yp = {y.x-P.x,y.y-P.y,y.z-P.z};
+	yp = normalize(yp);
+	y.x=P.x+yp.x;
+	y.y=P.y+yp.y;
+	y.z=P.z+yp.z;
+
+
+	point zp = {z.x-P.x,z.y-P.y,z.z-P.z};
+	zp = normalize(zp);
+	z.x=P.x+zp.x;
+	z.y=P.y+zp.y;
+	z.z=P.z+zp.z;
+
 }
 
 
