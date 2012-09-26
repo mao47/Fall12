@@ -184,20 +184,20 @@ void Camera::moveX(int shift)
 	t.z = shift * (x.z - P.z);
 
 	P.x += t.x;
-	P.y += t.z;
-	P.z += t.y;
+	P.y += t.y;
+	P.z += t.z;
 
 	x.x += t.x;
-	x.y += t.z;
-	x.z += t.y;
+	x.y += t.y;
+	x.z += t.z;
 
 	y.x += t.x;
-	y.y += t.z;
-	y.z += t.y;
+	y.y += t.y;
+	y.z += t.z;
 
 	z.x += t.x;
-	z.y += t.z;
-	z.z += t.y;
+	z.y += t.y;
+	z.z += t.z;
 }
 
 void Camera::moveY(int shift)
@@ -208,20 +208,20 @@ void Camera::moveY(int shift)
 	t.z = shift * (y.z - P.z);
 
 	P.x += t.x;
-	P.y += t.z;
-	P.z += t.y;
+	P.y += t.y;
+	P.z += t.z;
 
 	x.x += t.x;
-	x.y += t.z;
-	x.z += t.y;
+	x.y += t.y;
+	x.z += t.z;
 
 	y.x += t.x;
-	y.y += t.z;
-	y.z += t.y;
+	y.y += t.y;
+	y.z += t.z;
 
 	z.x += t.x;
-	z.y += t.z;
-	z.z += t.y;
+	z.y += t.y;
+	z.z += t.z;
 }
 
 void Camera::moveZ(int shift)
@@ -232,18 +232,18 @@ void Camera::moveZ(int shift)
 	t.z = shift * (z.z - P.z);
 
 	P.x += t.x;
-	P.y += t.z;
-	P.z += t.y;
+	P.y += t.y;
+	P.z += t.z;
 
 	x.x += t.x;
-	x.y += t.z;
-	x.z += t.y;
+	x.y += t.y;
+	x.z += t.z;
 
 	y.x += t.x;
-	y.y += t.z;
-	y.z += t.y;
+	y.y += t.y;
+	y.z += t.z;
 
 	z.x += t.x;
-	z.y += t.z;
-	z.z += t.y;
+	z.y += t.y;
+	z.z += t.z;
 }
