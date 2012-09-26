@@ -4,9 +4,14 @@
 
 Camera::Camera()
 {
-	N.x=0;	N.y=0;	N.z=-1;
+	
+	N.x=0;	N.y=0;	N.z=-1; //why neg?
 	U.x=0;	U.y=1;	U.z=0;
 	P.x=0;	P.y=0;	P.z=5;
+
+	x.x=1;	x.y=0;	x.z=5;
+	y.x=0;	y.y=1;	y.z=5;
+	z.x=0;	z.y=0;	z.z=4; //?
 	RATIO = 0.025;
 }
 
@@ -22,6 +27,40 @@ void Camera::lookAt(point p)
 void Camera::swivel(float x, float y)
 {
 	//TODO: SUPER CONFUSING VARIABLE NAME
+	float transO [4][4] = {{1,0,0,-P.x},
+	{0,1,0,-P.y},
+	{0,0,1,-P.z},
+	{0,0,0,1}};
+
+	////translate to origin
+	point tempx = multiplyP(transO, x);
+	point tempy = multiplyP(transO, y);
+	point tempz = multiplyP(transO, z);
+
+	/*
+	goal:
+	up -> y
+	look at -> z
+	u x n -> x
+
+
+	the (horizontal) rotation vector is now tempy to rotate horizontally in the camera's frame (where tempy is up)
+	the vertical rotation vector will be tempx
+	*/
+
+
+
+
+
+
+	//point yp = {-U.x, U.y, -U.x};	//where the y axis goes
+
+	////rotate U to world y
+	//float roty [4][4] = {{0,-U.x,0,0},
+	//{0,U.y,0,0},
+	//{0,-U.z,0,0},
+	//{0,0,0,1}};
+	//
 
 	float angle = x * RATIO;
 	//rotate N around (object) y axis (around U) by x
@@ -48,6 +87,14 @@ void Camera::swivel(float x, float y)
 
 MATRIX Camera::ViewTransform()
 {
+	N.x = z.x - P.x;
+	N.y = z.y - P.y;
+	N.z = z.z - P.z;
+
+	U.x = y.x - P.x;
+	U.y = y.y - P.y;
+	U.z = y.z - P.z;
+
 	point negN = {-N.x,-N.y,-N.z};
 
 	//compute n:
