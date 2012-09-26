@@ -25,8 +25,8 @@ MATRIX multiply (l left, r right)
 	return result;
 }
 //multiplies point by the matrix
-template <typename l, typename r>
-point multiplyP (l mat, r p)
+template <typename l>
+point multiplyP (l mat, point p)
 {
 	point result;
 	result.x = mat[0][0] * p.x + mat[0][1] * p.y + mat[0][2] * p.z + mat[0][3];

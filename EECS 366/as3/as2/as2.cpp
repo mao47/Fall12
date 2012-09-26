@@ -49,7 +49,8 @@ bool camToggle = false;
 //mouse movement vars
 int lastx=0; int lasty = 0;
 int swivelMouse = OFF;
-int zoomMouse = OFF;
+int strafeMouse = OFF;
+int viewMouse = OFF;
 
 //what to display
 int showAxes = ON;
@@ -297,17 +298,33 @@ void	mouseButton(int button,int state,int x,int y)
 	lasty = y;
 	if(button == 0) //left button: pan
 	{
-		if(state==0) swivelMouse=ON;
+		if(state==0)
+		{
+			swivelMouse=ON;
+			strafeMouse=OFF;
+			viewMouse=OFF;
+		}
 		else swivelMouse=OFF;
 	}
 	else if(button == 1)
 	{
-
+		if(state==0)
+		{
+			swivelMouse=OFF;
+			strafeMouse=ON;
+			viewMouse=OFF;
+		}
+		else strafeMouse=OFF;
 	}
 	else if(button == 2)
 	{
-		if(state==0) zoomMouse=ON;
-		else zoomMouse=OFF;
+		if(state==0)
+		{
+			swivelMouse=OFF;
+			strafeMouse=OFF;
+			viewMouse=ON;
+		}
+		else viewMouse=OFF;
 	}
 //	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
 }
@@ -321,11 +338,17 @@ void	mouseMotion(int x, int y)
 	{
 		camera.swivel(x-lastx,y-lasty);
 	}
-	if(zoomMouse)
+	else if(strafeMouse)
 	{
-		//cameraDistance += 0.005 * (y-lasty);
-		//if (cameraDistance < .1) cameraDistance = .1;
+		camera.moveX(x-lastx);
+		camera.moveY(y-lasty);
 	}
+	else if(viewMouse)
+	{
+		camera.moveZ(y-lasty);
+	}
+
+
 	lastx = x;
 	lasty = y;
 	glutPostRedisplay();

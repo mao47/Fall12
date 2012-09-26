@@ -24,7 +24,7 @@ void Camera::lookAt(point p)
 	N.y = direction.y / dist;
 	N.z = direction.z / dist;
 }
-void Camera::swivel(float x, float y)
+void Camera::swivel(float xa, float ya)
 {
 	//TODO: SUPER CONFUSING VARIABLE NAME
 	float transO [4][4] = {{1,0,0,-P.x},
@@ -62,7 +62,7 @@ void Camera::swivel(float x, float y)
 	//{0,0,0,1}};
 	//
 
-	float angle = x * RATIO;
+	float angle = xa * RATIO;
 	//rotate N around (object) y axis (around U) by x
 
 	// N = N * Ry
@@ -73,7 +73,7 @@ void Camera::swivel(float x, float y)
 	N = multiplyP(ty, N);
 
 	//rotate N and U around x axis (horizontal) by y
-	angle = -y * RATIO;
+	angle = -ya * RATIO;
 	float tx [4][4] = {{1,0,0,0},
 					  {0,cos(angle),-1*sin(angle),0},
 					  {0,sin(angle),cos(angle),0},
@@ -130,3 +130,74 @@ MATRIX Camera::ViewTransform()
 	return Mvw;
 }
 
+void Camera::moveX(int shift)
+{
+	point t;
+	t.x = shift * (x.x - P.x);
+	t.y = shift * (x.y - P.y);
+	t.z = shift * (x.z - P.z);
+
+	P.x += t.x;
+	P.y += t.z;
+	P.z += t.y;
+
+	x.x += t.x;
+	x.y += t.z;
+	x.z += t.y;
+
+	y.x += t.x;
+	y.y += t.z;
+	y.z += t.y;
+
+	z.x += t.x;
+	z.y += t.z;
+	z.z += t.y;
+}
+
+void Camera::moveY(int shift)
+{
+	point t;
+	t.x = shift * (y.x - P.x);
+	t.y = shift * (y.y - P.y);
+	t.z = shift * (y.z - P.z);
+
+	P.x += t.x;
+	P.y += t.z;
+	P.z += t.y;
+
+	x.x += t.x;
+	x.y += t.z;
+	x.z += t.y;
+
+	y.x += t.x;
+	y.y += t.z;
+	y.z += t.y;
+
+	z.x += t.x;
+	z.y += t.z;
+	z.z += t.y;
+}
+
+void Camera::moveZ(int shift)
+{
+	point t;
+	t.x = shift * (z.x - P.x);
+	t.y = shift * (z.y - P.y);
+	t.z = shift * (z.z - P.z);
+
+	P.x += t.x;
+	P.y += t.z;
+	P.z += t.y;
+
+	x.x += t.x;
+	x.y += t.z;
+	x.z += t.y;
+
+	y.x += t.x;
+	y.y += t.z;
+	y.z += t.y;
+
+	z.x += t.x;
+	z.y += t.z;
+	z.z += t.y;
+}
