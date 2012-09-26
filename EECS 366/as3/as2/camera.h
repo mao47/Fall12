@@ -13,7 +13,7 @@ public:
 	void swivel(float horizontal, float vertical);
 	void lookAt(point p);
 	MATRIX ViewTransform();
-	void moveX(int shift);
-	void moveY(int shift);
-	void moveZ(int shift);
+	void moveX(float shift);
+	void moveY(float shift);
+	void moveZ(float shift);
 };

@@ -38,6 +38,7 @@ float PI = atan((float)1)*4;
 float TRANSLATE_SPEED = .1;
 float ROTATE_SPEED = 0.1;
 float SCALE_RATIO = 0.1;
+float PAN_RATIO = 0.4;
 MATRIX M;
 float IDENTITY[][4] = {{1,0,0,0},
 					   {0,1,0,0},
@@ -306,7 +307,7 @@ void	mouseButton(int button,int state,int x,int y)
 		}
 		else swivelMouse=OFF;
 	}
-	else if(button == 1)
+	else if(button == 2)
 	{
 		if(state==0)
 		{
@@ -316,7 +317,7 @@ void	mouseButton(int button,int state,int x,int y)
 		}
 		else strafeMouse=OFF;
 	}
-	else if(button == 2)
+	else if(button == 1)
 	{
 		if(state==0)
 		{
@@ -326,6 +327,7 @@ void	mouseButton(int button,int state,int x,int y)
 		}
 		else viewMouse=OFF;
 	}
+	printf("swivel: %d, strafe: %d, view: %d\n", swivelMouse, strafeMouse, viewMouse);
 //	printf("long Angle: %f, lat angle: %f, Distance: %f\n",cameraLongAngle,cameraLatAngle,cameraDistance);
 }
 
@@ -340,8 +342,8 @@ void	mouseMotion(int x, int y)
 	}
 	else if(strafeMouse)
 	{
-		camera.moveX(x-lastx);
-		camera.moveY(y-lasty);
+		camera.moveX(PAN_RATIO*(lastx-x));
+		camera.moveY(PAN_RATIO*(lasty-y));
 	}
 	else if(viewMouse)
 	{

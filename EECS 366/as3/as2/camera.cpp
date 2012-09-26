@@ -51,7 +51,7 @@ void Camera::swivel(float xa, float ya)
 	point tempx = multiplyP(transO, x);
 	point tempy = multiplyP(transO, y);
 	point tempz = multiplyP(transO, z);
-	printf("x: %f, %f, %f\ny:%f, %f, %f\nz:%f, %f, %f\n", tempx.x, tempx.y, tempx.z, tempy.x, tempy.y, tempy.z, tempz.x, tempz.y, tempz.z);
+	//printf("x: %f, %f, %f\ny:%f, %f, %f\nz:%f, %f, %f\n", tempx.x, tempx.y, tempx.z, tempy.x, tempy.y, tempy.z, tempz.x, tempz.y, tempz.z);
 
 	//  http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/
 
@@ -118,7 +118,7 @@ void Camera::swivel(float xa, float ya)
 	y.y=P.y+yp.y;
 	y.z=P.z+yp.z;
 
-
+	
 
 	point zp = {z.x-P.x,z.y-P.y,z.z-P.z};
 	zp = normalize(zp);
@@ -176,7 +176,7 @@ MATRIX Camera::ViewTransform()
 	return Mvw;
 }
 
-void Camera::moveX(int shift)
+void Camera::moveX(float shift)
 {
 	point t;
 	t.x = shift * (x.x - P.x);
@@ -200,7 +200,7 @@ void Camera::moveX(int shift)
 	z.z += t.z;
 }
 
-void Camera::moveY(int shift)
+void Camera::moveY(float shift)
 {
 	point t;
 	t.x = shift * (y.x - P.x);
@@ -224,7 +224,7 @@ void Camera::moveY(int shift)
 	z.z += t.z;
 }
 
-void Camera::moveZ(int shift)
+void Camera::moveZ(float shift)
 {
 	point t;
 	t.x = shift * (z.x - P.x);
