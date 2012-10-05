@@ -15,35 +15,35 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4TemplateClasses.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4Template.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4TemplateClasses.h">
+    <ClInclude Include="Assignment4TemplateClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\as4_template\as4_template\glut.h">
+    <ClInclude Include="glut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\scene2.dat">
+    <None Include="glut32.dll">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\scene1.dat">
+    <None Include="scene1.dat">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\glut32.dll">
+    <None Include="scene2.dat">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\as4_template\as4_template\glut32.lib">
+    <Library Include="glut32.lib">
       <Filter>Resource Files</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Assignment4Template.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assignment4TemplateClasses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -74,20 +74,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4Template.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4TemplateClasses.cpp" />
+    <ClInclude Include="Assignment4TemplateClasses.h" />
+    <ClInclude Include="glut.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\as4_template\as4_template\Assignment4TemplateClasses.h" />
-    <ClInclude Include="..\..\..\..\..\..\as4_template\as4_template\glut.h" />
+    <None Include="glut32.dll" />
+    <None Include="scene1.dat" />
+    <None Include="scene2.dat" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\glut32.dll" />
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\scene1.dat" />
-    <None Include="..\..\..\..\..\..\as4_template\as4_template\scene2.dat" />
+    <Library Include="glut32.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\as4_template\as4_template\glut32.lib" />
+    <ClCompile Include="Assignment4Template.cpp" />
+    <ClCompile Include="Assignment4TemplateClasses.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
