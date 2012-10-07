@@ -81,7 +81,20 @@ void Object::Load(char* file, float s, float rx, float ry, float rz,
 			pVertexList[CurrentVertex].y = b;
 			pVertexList[CurrentVertex].z = c;
 
+			
 			//ADD YOUR CODE HERE :Track maximum and minimum coordinates for use in bounding boxes
+			if(CurrentVertex == 0)
+			{		
+				MinimumX = MaximumX = a;
+				MinimumY = MaximumY = b;
+				MinimumZ = MaximumZ = c;
+			}
+			if( MinimumX > a) MinimumX = a;
+			if( MaximumX < a) MaximumX = a;
+			if( MinimumY > b) MinimumY = b;
+			if( MaximumY < b) MaximumY = b;
+			if( MinimumZ > c) MinimumZ = c;
+			if( MaximumZ < c) MaximumZ = c;
 
 			CurrentVertex++;
 		}
@@ -96,8 +109,22 @@ void Object::Load(char* file, float s, float rx, float ry, float rz,
 	}
 
 	//ADD YOUR CODE HERE: Initialize the bounding box vertices
+	for(unsigned int i = 0; i < 8; i++)
+	{
+		if(i % 2 == 0)
+			pBoundingBox[i].x = MinimumX;
+		else
+			pBoundingBox[i].x = MaximumX;
+		if((i%4)/2 == 0)
+			pBoundingBox[i].y = MinimumY;
+		else
+			pBoundingBox[i].y = MaximumY;
+		if(i / 4 == 0)
+			pBoundingBox[i].z = MinimumZ;
+		else
+			pBoundingBox[i].z = MaximumZ;
+	}
 
-	
 	// Apply the initial transformations in order
 	LocalScale(s);
 	WorldRotate((float)(M_PI*rx/180.0), (float)(M_PI*ry/180.0), (float)(M_PI*rz/180.0));

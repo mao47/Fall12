@@ -164,7 +164,37 @@ void DisplayFunc()
 		if(ShowBoundingBoxes)
 		{
 			//ADD YOUR CODE HERE: Draw the bounding boxes
+			// Color the selected box red and others blue
+			//if(i == SelectedObject)
+			//	glColor3f(1, 0, 0);
+			//else
+			//	glColor3f(0, 0, 1);
+			////  draw object faces
+			//for(unsigned int j = 0; j < 3; j++)
+			//{
+			//	input = new Vertex[4];
+			//	input[0] = pDisplayScene->pObjectList[i].pBoundingBox[];
+			//	input[1] = pDisplayScene->pObjectList[i].pBoundingBox[];
+			//	input[2] = pDisplayScene->pObjectList[i].pBoundingBox[];
+			//	input[3] = pDisplayScene->pObjectList[i].pBoundingBox[];
 
+			//	for (int k=0; k<3; k++){
+			//		temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+			//		temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
+			//		input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
+			//	}
+
+			//
+
+			//	glBegin(GL_POLYGON);
+			//	for(int k = 0; k < 3; k++)
+			//		glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
+			//	glEnd();
+
+			//	delete [] input;
+			//	input = NULL;
+		
+			//}
 		} 
 	}
 
