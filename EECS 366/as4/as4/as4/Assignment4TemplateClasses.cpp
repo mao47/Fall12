@@ -366,6 +366,22 @@ void Camera::Perspective()
 void Camera::Orthographic()
 {
 	//ADD YOUR CODE HERE!!
+
+	for(int i=0; i<4; i++){
+		 for(int j=0; j<4; j++){
+			ProjectionMatrix[4*i+j] = 0;
+		 }
+	 }
+
+	 //pers1a = Identity
+
+	//Scale
+	ProjectionMatrix[0] = 2/ViewWidth;
+	ProjectionMatrix[5] = 2/ViewHeight;
+	ProjectionMatrix[10] = -2/(FarPlane-NearPlane);
+
+	//Translate
+	ProjectionMatrix[11] = -(FarPlane+NearPlane)/(FarPlane-NearPlane);
 }
 
 // Calculate the new viewing transform matrix
