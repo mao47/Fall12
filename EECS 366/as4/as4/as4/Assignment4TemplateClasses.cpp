@@ -356,9 +356,9 @@ void Camera::Perspective()
 
 	 //pers2
 	 ProjectionMatrix[15] = 0;
-	 ProjectionMatrix[14] = -1;
+	 ProjectionMatrix[11] = -1;
 	 ProjectionMatrix[10] = -(FarPlane + NearPlane) / (FarPlane - NearPlane);
-	 ProjectionMatrix[11] = -2 * FarPlane * NearPlane / (FarPlane - NearPlane);
+	 ProjectionMatrix[14] = -2 * FarPlane * NearPlane / (FarPlane - NearPlane);
 
 }
 
@@ -381,7 +381,8 @@ void Camera::Orthographic()
 	ProjectionMatrix[10] = -2/(FarPlane-NearPlane);
 
 	//Translate
-	ProjectionMatrix[11] = -(FarPlane+NearPlane)/(FarPlane-NearPlane);
+	ProjectionMatrix[14] = -(FarPlane+NearPlane)/(FarPlane-NearPlane);
+	ProjectionMatrix[15] = 1;
 }
 
 // Calculate the new viewing transform matrix
@@ -389,24 +390,24 @@ void Camera::LookAt()
 {
 	//ADD YOUR CODE HERE!!
 	ViewingMatrix[0] = u.i;
-	ViewingMatrix[1] = u.j;
-	ViewingMatrix[2] = u.k;
+	ViewingMatrix[4] = u.j;
+	ViewingMatrix[8] = u.k;
 
-	ViewingMatrix[4] = v.i;
+	ViewingMatrix[1] = v.i;
 	ViewingMatrix[5] = v.j;
-	ViewingMatrix[6] = v.k;
+	ViewingMatrix[9] = v.k;
 
-	ViewingMatrix[8] = n.i;
-	ViewingMatrix[9] = n.j;
+	ViewingMatrix[2] = n.i;
+	ViewingMatrix[6] = n.j;
 	ViewingMatrix[10] = n.k;
 
-	ViewingMatrix[12] = 0;
-	ViewingMatrix[13] = 0;
-	ViewingMatrix[14] = 0;
+	ViewingMatrix[3] = 0;
+	ViewingMatrix[7] = 0;
+	ViewingMatrix[11] = 0;
 
-	ViewingMatrix[3] = - (u.i*Position.x + u.j * Position.y + u.k * Position.z);
-	ViewingMatrix[7] = - (v.i*Position.x + v.j * Position.y + v.k * Position.z);
-	ViewingMatrix[11] = - (n.i*Position.x + n.j * Position.y + n.k * Position.z);
+	ViewingMatrix[12] = - (u.i*Position.x + u.j * Position.y + u.k * Position.z);
+	ViewingMatrix[13] = - (v.i*Position.x + v.j * Position.y + v.k * Position.z);
+	ViewingMatrix[14] = - (n.i*Position.x + n.j * Position.y + n.k * Position.z);
 
 	ViewingMatrix[15] = 1;
 }
