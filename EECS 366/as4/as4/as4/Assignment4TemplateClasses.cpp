@@ -341,7 +341,25 @@ void Camera::EnforceVectors()
 void Camera::Perspective()
 {
 	//ADD YOUR CODE HERE!!
-	 
+
+	 for(int i=0; i<4; i++){
+		 for(int j=0; j<4; j++){
+			ProjectionMatrix[4*i+j] = 0;
+		 }
+	 }
+
+	 //pers1a = Identity
+
+	 //pers1b
+	 ProjectionMatrix[0] = 2 * ViewPlane / ViewWidth;
+	 ProjectionMatrix[5] = 2 * ViewPlane / ViewHeight;
+
+	 //pers2
+	 ProjectionMatrix[15] = 0;
+	 ProjectionMatrix[14] = -1;
+	 ProjectionMatrix[10] = -(FarPlane + NearPlane) / (FarPlane - NearPlane);
+	 ProjectionMatrix[11] = -2 * FarPlane * NearPlane / (FarPlane - NearPlane);
+
 }
 
 // Calculate the new orthographic projection matrix
