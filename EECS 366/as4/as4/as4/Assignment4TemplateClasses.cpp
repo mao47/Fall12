@@ -372,8 +372,27 @@ void Camera::Orthographic()
 void Camera::LookAt()
 {
 	//ADD YOUR CODE HERE!!
-	
+	ViewingMatrix[0] = u.i;
+	ViewingMatrix[1] = u.j;
+	ViewingMatrix[2] = u.k;
 
+	ViewingMatrix[4] = v.i;
+	ViewingMatrix[5] = v.j;
+	ViewingMatrix[6] = v.k;
+
+	ViewingMatrix[8] = n.i;
+	ViewingMatrix[9] = n.j;
+	ViewingMatrix[10] = n.k;
+
+	ViewingMatrix[12] = 0;
+	ViewingMatrix[13] = 0;
+	ViewingMatrix[14] = 0;
+
+	ViewingMatrix[3] = - (u.i*Position.x + u.j * Position.y + u.k * Position.z);
+	ViewingMatrix[7] = - (v.i*Position.x + v.j * Position.y + v.k * Position.z);
+	ViewingMatrix[11] = - (n.i*Position.x + n.j * Position.y + n.k * Position.z);
+
+	ViewingMatrix[15] = 1;
 }
 
 // Transform a point with an arbitrary matrix
