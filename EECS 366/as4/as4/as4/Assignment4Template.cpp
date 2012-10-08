@@ -164,37 +164,58 @@ void DisplayFunc()
 		if(ShowBoundingBoxes)
 		{
 			//ADD YOUR CODE HERE: Draw the bounding boxes
-			// Color the selected box red and others blue
-			//if(i == SelectedObject)
-			//	glColor3f(1, 0, 0);
-			//else
-			//	glColor3f(0, 0, 1);
-			////  draw object faces
-			//for(unsigned int j = 0; j < 3; j++)
-			//{
-			//	input = new Vertex[4];
-			//	input[0] = pDisplayScene->pObjectList[i].pBoundingBox[];
-			//	input[1] = pDisplayScene->pObjectList[i].pBoundingBox[];
-			//	input[2] = pDisplayScene->pObjectList[i].pBoundingBox[];
-			//	input[3] = pDisplayScene->pObjectList[i].pBoundingBox[];
+			//Color the selected box red and others blue
+			if(i == SelectedObject)
+				glColor3f(1, 0, 0);
+			else
+				glColor3f(0, 0, 1);
+			//  draw top and bottom faces of box
+			for(int j = 0; j < 2; j++)
+			{
+				input = new Vertex[4];
+				input[0] = pDisplayScene->pObjectList[i].pBoundingBox[0+4*j];
+				input[1] = pDisplayScene->pObjectList[i].pBoundingBox[1+4*j];
+				input[2] = pDisplayScene->pObjectList[i].pBoundingBox[3+4*j];
+				input[3] = pDisplayScene->pObjectList[i].pBoundingBox[2+4*j];
 
-			//	for (int k=0; k<3; k++){
-			//		temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
-			//		temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
-			//		input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
-			//	}
+				for (int k=0; k<4; k++){
+					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+					temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
+					input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
+				}
 
-			//
+			
 
-			//	glBegin(GL_POLYGON);
-			//	for(int k = 0; k < 3; k++)
-			//		glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
-			//	glEnd();
+				glBegin(GL_POLYGON);
+				for(int k = 0; k < 4; k++)
+					glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
+				glEnd();
 
-			//	delete [] input;
-			//	input = NULL;
-		
-			//}
+				delete [] input;
+				input = NULL;
+			}
+			//draw vertical edges
+			for(int j = 0; j < 4; j++)
+			{
+				input = new Vertex[2];
+				input[0] = pDisplayScene->pObjectList[i].pBoundingBox[j];
+				input[1] = pDisplayScene->pObjectList[i].pBoundingBox[j+4];
+				
+				for (int k=0; k<2; k++){
+					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+					temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
+					input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
+				}
+
+				glBegin(GL_LINES);
+				for(int k = 0; k < 2; k++)
+					glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
+				glEnd();
+
+				delete [] input;
+				input = NULL;
+			}
+
 		} 
 	}
 
