@@ -30,6 +30,8 @@ int WindowWidth = 300, WindowHeight = 300;
 Scene* pDisplayScene;
 Camera* pDisplayCamera;
 
+Vertex** boundBoxes;
+
 
 void DisplayFunc()
 {
@@ -94,9 +96,11 @@ void DisplayFunc()
 		glLineWidth(1.0);
 	}
 
+	boundBoxes = new Vertex*[pDisplayScene->ObjectCount];
 	// draw objects
 	for(int i = 0; i < pDisplayScene->ObjectCount; i++)
 	{
+		boundBoxes[i] = new Vertex[8];
 		// Color the selected object yellow and others blue
 		if(i == SelectedObject)
 			glColor3f(1, 1, 0);
@@ -161,62 +165,63 @@ void DisplayFunc()
 			glLineWidth(1.0);
 		}
 
-		if(ShowBoundingBoxes)
+		
+		//ADD YOUR CODE HERE: Draw the bounding boxes
+		//Color the selected box red and others blue
+		if(i == SelectedObject)
+			glColor3f(1, 0, 0);
+		else
+			glColor3f(0, 0, 1);
+		//  draw top and bottom faces of box
+		//TODO: Grab vertices of bounding box in View Coord
+		for(int j = 0; j < 2; j++)
 		{
-			//ADD YOUR CODE HERE: Draw the bounding boxes
-			//Color the selected box red and others blue
-			if(i == SelectedObject)
-				glColor3f(1, 0, 0);
-			else
-				glColor3f(0, 0, 1);
-			//  draw top and bottom faces of box
-			for(int j = 0; j < 2; j++)
-			{
-				input = new Vertex[4];
-				input[0] = pDisplayScene->pObjectList[i].pBoundingBox[0+4*j];
-				input[1] = pDisplayScene->pObjectList[i].pBoundingBox[1+4*j];
-				input[2] = pDisplayScene->pObjectList[i].pBoundingBox[3+4*j];
-				input[3] = pDisplayScene->pObjectList[i].pBoundingBox[2+4*j];
+			input = new Vertex[4];
+			input[0] = pDisplayScene->pObjectList[i].pBoundingBox[0+4*j];
+			input[1] = pDisplayScene->pObjectList[i].pBoundingBox[1+4*j];
+			input[2] = pDisplayScene->pObjectList[i].pBoundingBox[3+4*j];
+			input[3] = pDisplayScene->pObjectList[i].pBoundingBox[2+4*j];
 
-				for (int k=0; k<4; k++){
-					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
-					temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
-					input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
-				}
+			for (int k=0; k<4; k++){
+				temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+				temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
+				boundBoxes[i][j*4+k] = temp2;
+				input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
+			}
 
-			
-
+			if(ShowBoundingBoxes){
 				glBegin(GL_POLYGON);
 				for(int k = 0; k < 4; k++)
 					glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
 				glEnd();
-
-				delete [] input;
-				input = NULL;
 			}
-			//draw vertical edges
-			for(int j = 0; j < 4; j++)
-			{
-				input = new Vertex[2];
-				input[0] = pDisplayScene->pObjectList[i].pBoundingBox[j];
-				input[1] = pDisplayScene->pObjectList[i].pBoundingBox[j+4];
-				
-				for (int k=0; k<2; k++){
-					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
-					temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
-					input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
-				}
 
+			delete [] input;
+			input = NULL;
+		}
+		//draw vertical edges
+		for(int j = 0; j < 4; j++)
+		{
+			input = new Vertex[2];
+			input[0] = pDisplayScene->pObjectList[i].pBoundingBox[j];
+			input[1] = pDisplayScene->pObjectList[i].pBoundingBox[j+4];
+				
+			for (int k=0; k<2; k++){
+				temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+				temp2	= Transform(pDisplayCamera->ViewingMatrix,temp);
+				input[k]= Transform(pDisplayCamera->ProjectionMatrix,temp2);
+			}
+			if(ShowBoundingBoxes){
 				glBegin(GL_LINES);
 				for(int k = 0; k < 2; k++)
 					glVertex2f(input[k].x/input[k].h, input[k].y/input[k].h);
 				glEnd();
-
-				delete [] input;
-				input = NULL;
 			}
 
-		} 
+			delete [] input;
+			input = NULL;
+			}
+ 
 	}
 
 	glutSwapBuffers();
