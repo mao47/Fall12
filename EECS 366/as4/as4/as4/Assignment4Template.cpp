@@ -31,6 +31,87 @@ Scene* pDisplayScene;
 Camera* pDisplayCamera;
 
 
+#define EPSILON 0.000001
+#define CROSS(dest,v1,v2) \
+          dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
+          dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
+          dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
+#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
+#define SUB(dest,v1,v2) \
+          dest[0]=v1[0]-v2[0]; \
+          dest[1]=v1[1]-v2[1]; \
+          dest[2]=v1[2]-v2[2]; 
+
+int intersect_triangle(float orig[3], float dir[3],
+                   float vert0[3], float vert1[3], float vert2[3],
+                   float *t, float *u, float *v)
+{
+   float edge1[3], edge2[3], tvec[3], pvec[3], qvec[3];
+   float det,inv_det;
+
+   /* find vectors for two edges sharing vert0 */
+   SUB(edge1, vert1, vert0);
+   SUB(edge2, vert2, vert0);
+
+   /* begin calculating determinant - also used to calculate U parameter */
+   CROSS(pvec, dir, edge2);
+
+   /* if determinant is near zero, ray lies in plane of triangle */
+   det = DOT(edge1, pvec);
+
+#ifdef TEST_CULL           /* define TEST_CULL if culling is desired */
+   if (det < EPSILON)
+      return 0;
+
+   /* calculate distance from vert0 to ray origin */
+   SUB(tvec, orig, vert0);
+
+   /* calculate U parameter and test bounds */
+   *u = DOT(tvec, pvec);
+   if (*u < 0.0 || *u > det)
+      return 0;
+
+   /* prepare to test V parameter */
+   CROSS(qvec, tvec, edge1);
+
+    /* calculate V parameter and test bounds */
+   *v = DOT(dir, qvec);
+   if (*v < 0.0 || *u + *v > det)
+      return 0;
+
+   /* calculate t, scale parameters, ray intersects triangle */
+   *t = DOT(edge2, qvec);
+   inv_det = 1.0 / det;
+   *t *= inv_det;
+   *u *= inv_det;
+   *v *= inv_det;
+#else                    /* the non-culling branch */
+   if (det > -EPSILON && det < EPSILON)
+     return 0;
+   inv_det = 1.0 / det;
+
+   /* calculate distance from vert0 to ray origin */
+   SUB(tvec, orig, vert0);
+
+   /* calculate U parameter and test bounds */
+   *u = DOT(tvec, pvec) * inv_det;
+   if (*u < 0.0 || *u > 1.0)
+     return 0;
+
+   /* prepare to test V parameter */
+   CROSS(qvec, tvec, edge1);
+
+   /* calculate V parameter and test bounds */
+   *v = DOT(dir, qvec) * inv_det;
+   if (*v < 0.0 || *u + *v > 1.0)
+     return 0;
+
+   /* calculate t, ray intersects triangle */
+   *t = DOT(edge2, qvec) * inv_det;
+#endif
+   return 1;
+}
+
 void DisplayFunc()
 {
 	
@@ -246,6 +327,53 @@ void MouseFunc(int button,int state,int x,int y)
 	{
 		// Select a new object with (x,y) 
 		//ADD YOUR CODE HERE: Select a new object by intersecting the selection ray
+
+		//transform viewport coordinates to image frame coordinates
+		float viewX = (float)x / (float)WindowWidth * pDisplayCamera->ViewWidth - pDisplayCamera->ViewWidth / (float)2;
+		float viewY = -(float)y / (float)WindowHeight * pDisplayCamera->ViewHeight + pDisplayCamera->ViewHeight / (float)2;
+
+		//DECLARE ALL THE INPUTS FOR THE INTERSECTION ALGORITHM
+		Vertex* input;
+		Vertex	temp,temp1,temp2,temp3;
+		//Vertex  orig,xunit,yunit,zunit;
+		float orig[3], dir[3], vert0[3], vert1[3], vert2[3];
+		float t, u, v;
+		
+		orig[0] = 0; orig[1] = 0; orig[2] = 0;
+		dir[0] = viewX; dir[1] = viewY; dir[2] = -pDisplayCamera->ViewPlane;
+
+
+		//assume the ray is calculated at this point:
+		for(int i = 0; i < pDisplayScene->ObjectCount; i++)
+		{
+			for(int j = 0; j < pDisplayScene->pObjectList[i].FaceCount; j++)
+			{
+				input = new Vertex[3];
+				input[0] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v1];
+				input[1] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v2];
+				input[2] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v3];
+
+				for (int k=0; k<3; k++){
+					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
+					input[k]	= Transform(pDisplayCamera->ViewingMatrix,temp);
+				}
+				vert0[0] = input[0].x; vert0[1] = input[0].y; vert0[2] = input[0].z;
+				vert1[0] = input[1].x; vert1[1] = input[1].y; vert1[2] = input[1].z;
+				vert2[0] = input[2].x; vert2[1] = input[1].y; vert2[2] = input[2].z;
+
+				if(intersect_triangle(orig, dir, vert0, vert1, vert2, &t, &u, &v) == 1)
+				{
+					SelectedObject = i;
+					delete [] input;
+					input = NULL;
+					glutPostRedisplay();
+					return;
+				}
+
+				delete [] input;
+				input = NULL;
+			}
+		}
 
 		glutPostRedisplay();
 	}
