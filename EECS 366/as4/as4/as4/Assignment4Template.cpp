@@ -31,6 +31,7 @@ Scene* pDisplayScene;
 Camera* pDisplayCamera;
 
 Vertex** boundBoxes;
+int triangles[12][3];
 
 
 #define EPSILON 0.000001
@@ -351,17 +352,13 @@ void MouseFunc(int button,int state,int x,int y)
 		//assume the ray is calculated at this point:
 		for(int i = 0; i < pDisplayScene->ObjectCount; i++)
 		{
-			for(int j = 0; j < pDisplayScene->pObjectList[i].FaceCount; j++)
+			for(int j = 0; j < 12; j++)
 			{
 				input = new Vertex[3];
-				input[0] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v1];
-				input[1] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v2];
-				input[2] = pDisplayScene->pObjectList[i].pVertexList[pDisplayScene->pObjectList[i].pFaceList[j].v3];
+				input[0] = boundBoxes[i][triangles[j][0]];
+				input[1] = boundBoxes[i][triangles[j][1]];;
+				input[2] = boundBoxes[i][triangles[j][2]];;
 
-				for (int k=0; k<3; k++){
-					temp	= Transform(pDisplayScene->pObjectList[i].ModelMatrix,input[k]);
-					input[k]	= Transform(pDisplayCamera->ViewingMatrix,temp);
-				}
 				vert0[0] = input[0].x; vert0[1] = input[0].y; vert0[2] = input[0].z;
 				vert1[0] = input[1].x; vert1[1] = input[1].y; vert1[2] = input[1].z;
 				vert2[0] = input[2].x; vert2[1] = input[1].y; vert2[2] = input[2].z;
@@ -542,6 +539,60 @@ int main(int argc, char* argv[])
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
+
+	//bottom
+	triangles[0][0] = 0;
+	triangles[0][1] = 1;
+	triangles[0][2] = 2;
+
+	triangles[1][0] = 2;
+	triangles[1][1] = 3;
+	triangles[1][2] = 4;
+
+	//top
+	triangles[2][0] = 4;
+	triangles[2][1] = 5;
+	triangles[2][2] = 6;
+
+	triangles[3][0] = 5;
+	triangles[3][1] = 6;
+	triangles[3][2] = 7;
+
+	//front
+	triangles[4][0] = 0;
+	triangles[4][1] = 2;
+	triangles[4][2] = 4;
+
+	triangles[5][0] = 2;
+	triangles[5][1] = 4;
+	triangles[5][2] = 6;
+
+	//back
+	triangles[6][0] = 1;
+	triangles[6][1] = 3;
+	triangles[6][2] = 5;
+
+	triangles[7][0] = 3;
+	triangles[7][1] = 5;
+	triangles[7][2] = 7;
+
+	//left
+	triangles[8][0] = 0;
+	triangles[8][1] = 1;
+	triangles[8][2] = 5;
+
+	triangles[9][0] = 0;
+	triangles[9][1] = 4;
+	triangles[9][2] = 5;
+
+	//right
+	triangles[10][0] = 2;
+	triangles[10][1] = 3;
+	triangles[10][2] = 6;
+
+	triangles[11][0] = 3;
+	triangles[11][1] = 6;
+	triangles[11][2] = 7;
 
     // Switch to main loop
     glutMainLoop();
