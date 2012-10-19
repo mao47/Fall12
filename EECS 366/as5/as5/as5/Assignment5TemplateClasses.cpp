@@ -486,4 +486,55 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 		output[i] = input[i];
 	*out_count = count;
 	return output;
+
+	Vertex f, s, p;
+
+
+
+
+
+	//check -h<=x
+	for(int i = 0; i < count; i++)
+	{
+		p = input[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (-h <= x)
+			if((s.x < -s.h && p.x >= -p.h)
+				|| (s.x >= -s.h && p.x < -p.h))
+			{
+				//todo: compute intersection
+
+				//lapidus: intersection between SP and the plane (-h <= x)
+				//compute A distance, from both S and P and use ratio. 
+				//the measures must be parallel, but don't have to be perpendicular
+				//to plane. so I think
+				// you just want the x or h difference in this case
+
+				s = p;
+				//todo: output intersection
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (-h <= x)
+		if(s.x >= -s.h)
+		{
+			//todo: output s
+		}
+	}
+
+
+
+
+
+
+
 }
