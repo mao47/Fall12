@@ -303,6 +303,8 @@ Camera::Camera()
 	NearPlane = 2.0;
 	ViewPlane = 10.0;
 
+	minDistance = 1.0;
+
 	LookAt();
 }
 
@@ -336,6 +338,20 @@ void Camera::MoveView(float d)
 {
 	if(ViewPlane + d > 1.0)
         ViewPlane = ViewPlane + d;
+}
+
+// Moves the far plane toward/away from the camera
+void Camera::MoveFarPlane(float move)
+{
+	if(FarPlane + move > NearPlane + minDistance)
+        FarPlane = FarPlane + move;
+}
+
+// Moves the near plane toward/away from the camera
+void Camera::MoveNearPlane(float move)
+{
+	if(NearPlane + move > minDistance && NearPlane + move < FarPlane - minDistance)
+        NearPlane = NearPlane + move;
 }
 
 // Set (and normalize) the camera vectors based on the viewing angles

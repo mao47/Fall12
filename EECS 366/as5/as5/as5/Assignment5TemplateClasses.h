@@ -55,7 +55,8 @@ public:
 	void Pan(float y, float p);
 	void ScaleView(float s);
 	void MoveView(float d);
-	// ADD CODE HERE: functionality to move far/near planes is needed
+	void MoveFarPlane(float move);
+	void MoveNearPlane(float move);
 	void EnforceVectors();
 	void Perspective();
 	void Orthographic();
@@ -66,6 +67,7 @@ public:
 	Vector v;
 	Vector u;
 	float FarPlane, NearPlane, ViewPlane;
+	float minDistance;
 	float ViewWidth, ViewHeight;
 	float ViewingMatrix[16];
 	float ProjectionMatrix[16];
