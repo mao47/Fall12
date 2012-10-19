@@ -361,7 +361,7 @@ void MouseFunc(int button,int state,int x,int y)
 
 				vert0[0] = input[0].x; vert0[1] = input[0].y; vert0[2] = input[0].z;
 				vert1[0] = input[1].x; vert1[1] = input[1].y; vert1[2] = input[1].z;
-				vert2[0] = input[2].x; vert2[1] = input[1].y; vert2[2] = input[2].z;
+				vert2[0] = input[2].x; vert2[1] = input[2].y; vert2[2] = input[2].z;
 
 				if(intersect_triangle(orig, dir, vert0, vert1, vert2, &t, &u, &v) == 1)
 				{
