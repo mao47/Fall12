@@ -497,11 +497,7 @@ int Select(int previous, Scene* pScene, Camera* pCamera, float x, float y)
 // ADD CODE HERE: dummy function only copies polygons
 Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 {
-	Vertex* output = new Vertex[count];
-	for(int i = 0; i < count; i++)
-		output[i] = input[i];
-	*out_count = count;
-	return output;
+
 
 	Vertex f, s, p;
 
@@ -509,6 +505,7 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 	//our input is always a triangle, but I'm not sure what it is, but pretty
 	//sure it is less than 16 vertices.
 	Vertex* intermediate = new Vertex[16];
+	
 	int outputCounter = 0;
 
 
@@ -529,14 +526,14 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 		else
 		{
 			//cross plane? (-h <= x)
-			if((s.x < -s.h && p.x >= -p.h)
-				|| (s.x >= -s.h && p.x < -p.h))
+			if((s.x < -s.h && p.x > -p.h)
+				|| (s.x > -s.h && p.x < -p.h))
 			{
-				float alpha = (s.x - s.h)/(s.x-s.h-p.x+p.x);
-				intersect.x = alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
-				intersect.y = alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
-				intersect.z = alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
-				intersect.h = alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+				float alpha = (s.x - (-s.h))/(s.x-(-s.h)-(p.x-(-p.h)));
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
 				s = p;
 				//todo: output intersection
 				intermediate[outputCounter] = intersect;
@@ -558,11 +555,15 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 	if(outputCounter > 0)
 	{
 		//does SF cross plane? (-h <= x)
-		if((s.x < -s.h && f.x >= -f.h)
-			|| (s.x >= -s.h && f.x < -f.h))
+		if((s.x < -s.h && f.x > -f.h)
+			|| (s.x > -s.h && f.x < -f.h))
 		{
 			//todo: compute intersection
-
+			float alpha = (s.x - (-s.h))/(s.x-(-s.h)-(f.x-(-f.h)));
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
 			//output intersection
 			intermediate[outputCounter] = intersect;
 			outputCounter++;
@@ -572,7 +573,333 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 
 
 
+	Vertex* intermediate2 = new Vertex[16];
+	int outputCounter2 = 0;
+	//check x<=h
+	for(int i = 0; i < outputCounter; i++)
+	{
+		p = intermediate[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (x<=h)
+			if((s.x < s.h && p.x > p.h)
+				|| (s.x > s.h && p.x < p.h))
+			{
+				float alpha = (s.x - (s.h))/(s.x-(s.h)-(p.x-(p.h)));
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);	
+				s = p;
+				//output intersection
+				intermediate2[outputCounter2] = intersect;
+				outputCounter2++;
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (x<=h)
+		if(s.x < s.h)
+		{
+			//output s
+			intermediate2[outputCounter2] = s;
+			outputCounter2++;
+		}
+	}
+	if(outputCounter2 > 0)
+	{
+		//does SF cross plane? (x<=h)
+		if((s.x < s.h && f.x > f.h)
+			|| (s.x > s.h && f.x < f.h))
+		{
+			//todo: compute intersection
+			float alpha = (s.x - (s.h))/(s.x-(s.h)-(f.x-(f.h)));
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+			//output intersection
+			intermediate2[outputCounter2] = intersect;
+			outputCounter2++;
+		}
+	}
 
 
+
+
+	Vertex* intermediate3 = new Vertex[16];
+	int outputCounter3 = 0;
+	//check y<=h
+	for(int i = 0; i < outputCounter2; i++)
+	{
+		p = intermediate2[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (y<=h)
+			if((s.y < s.h && p.y > p.h)
+				|| (s.y > s.h && p.y < p.h))
+			{
+				float alpha = (s.y - (s.h))/(s.y-(s.h)-(p.y-(p.h)));
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+				s = p;
+				//output intersection
+				intermediate3[outputCounter3] = intersect;
+				outputCounter3++;
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (y<=h)
+		if(s.y < s.h)
+		{
+			//output s
+			intermediate3[outputCounter3] = s;
+			outputCounter3++;
+		}
+	}
+	if(outputCounter3 > 0)
+	{
+		//does SF cross plane? (y<=h)
+		if((s.y < s.h && f.y > f.h)
+			|| (s.y > s.h && f.y < f.h))
+		{
+			//todo: compute intersection
+			float alpha = (s.y - (s.h))/(s.y-(s.h)-(f.y-(f.h)));
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+			//output intersection
+			intermediate3[outputCounter3] = intersect;
+			outputCounter3++;
+		}
+	}
+
+
+
+
+
+	Vertex* intermediate4 = new Vertex[16];
+	int outputCounter4 = 0;
+	//check -h<=y
+	for(int i = 0; i < outputCounter3; i++)
+	{
+		p = intermediate3[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (-h<=y)
+			if((s.y < -s.h && p.y > -p.h)
+				|| (s.y > -s.h && p.y < -p.h))
+			{
+				float alpha = (s.y - (-s.h))/(s.y-(-s.h)-(p.y-(-p.h)));
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+				s = p;
+				//output intersection
+				intermediate4[outputCounter4] = intersect;
+				outputCounter4++;
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (-h<=y)
+		if(s.y >= -s.h)
+		{
+			//output s
+			intermediate4[outputCounter4] = s;
+			outputCounter4++;
+		}
+	}
+	if(outputCounter4 > 0)
+	{
+		//does SF cross plane? (-h<=y)
+		if((s.y < -s.h && f.y > -f.h)
+			|| (s.y > -s.h && f.y < -f.h))
+		{
+			//todo: compute intersection
+			float alpha = (s.y - (-s.h))/(s.y-(-s.h)-(f.y-(-f.h)));
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+			//output intersection
+			intermediate4[outputCounter4] = intersect;
+			outputCounter4++;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+	
+
+	Vertex* intermediate5 = new Vertex[16];
+	int outputCounter5 = 0;
+	//check z<=h
+	for(int i = 0; i < outputCounter4; i++)
+	{
+		p = intermediate4[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (y<=h)
+			if((s.z < s.h && p.z > p.h)
+				|| (s.z > s.h && p.z < p.h))
+			{
+				float alpha = (s.z - (s.h))/(s.z-(s.h)-(p.z-(p.h)));
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+				s = p;
+				//output intersection
+				intermediate5[outputCounter5] = intersect;
+				outputCounter5++;
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (y<=h)
+		if(s.z < s.h)
+		{
+			//output s
+			intermediate5[outputCounter5] = s;
+			outputCounter5++;
+		}
+	}
+	if(outputCounter5 > 0)
+	{
+		//does SF cross plane? (y<=h)
+		if((s.z < s.h && f.z > f.h)
+			|| (s.z > s.h && f.z < f.h))
+		{
+			//todo: compute intersection
+			float alpha = (s.z - (s.h))/(s.z-(s.h)-(f.z-(f.h)));
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+			//output intersection
+			intermediate5[outputCounter5] = intersect;
+			outputCounter5++;
+		}
+	}
+
+
+
+
+
+	Vertex* intermediate6 = new Vertex[16];
+	int outputCounter6 = 0;
+	//check 0<=z
+	for(int i = 0; i < outputCounter5; i++)
+	{
+		p = intermediate5[i];
+		if(i == 0)
+		{
+			s = p;
+			f = p;
+		}
+		else
+		{
+			//cross plane? (0<=z)
+			if((s.z < 0 && p.z > 0)
+				|| (s.z > 0 && p.z < 0))
+			{
+				float alpha = (s.z)/(s.z-p.z);
+				intersect.x = s.x + alpha*(p.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = s.y + alpha*(p.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = s.z + alpha*(p.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = s.h + alpha*(p.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+				s = p;
+				//output intersection
+				intermediate6[outputCounter6] = intersect;
+				outputCounter6++;
+			}
+			else
+			{
+				s = p;
+			}
+		}
+		//is s on visible side? (0<=z)
+		if(s.z >= 0)
+		{
+			//output s
+			intermediate6[outputCounter6] = s;
+			outputCounter6++;
+		}
+	}
+	if(outputCounter6 > 0)
+	{
+		//does SF cross plane? (0<=z)
+		if((s.z < 0 && f.z > 0)
+			|| (s.z > 0 && f.z < 0))
+		{
+			//todo: compute intersection
+			float alpha = (s.z)/(s.z-f.z);
+			intersect.x = s.x + alpha*(f.x-s.x);//alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+			intersect.y = s.y + alpha*(f.y-s.y);//alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+			intersect.z = s.z + alpha*(f.z-s.z);//alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+			intersect.h = s.h + alpha*(f.h-s.h);//alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
+			//output intersection
+			intermediate6[outputCounter6] = intersect;
+			outputCounter6++;
+		}
+	}
+
+
+	Vertex* output = new Vertex[outputCounter6];
+	for(int i = 0; i < outputCounter6; i++)
+		output[i] = intermediate6[i];
+	*out_count = outputCounter6;
+	delete [] intermediate;
+	delete [] intermediate2;
+	delete [] intermediate3;
+	delete [] intermediate4;
+	delete [] intermediate5;
+	delete [] intermediate6;
+
+	return output;
+
+
+	
 
 }

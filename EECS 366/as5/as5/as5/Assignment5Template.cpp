@@ -117,6 +117,23 @@ void DisplayFunc()
 				glVertex2f(output[k].x/output[k].h, output[k].y/output[k].h);
 			glEnd();
 
+
+			for(int k = 0; k < 3; k++)
+			{
+				input[k].x = -input[k].x;
+				input[k].y = -input[k].y;
+				input[k].z = -input[k].z;
+				input[k].h = -input[k].h;
+			}
+
+			output = ClipPolygon(3, input, &length);
+
+			glBegin(GL_POLYGON);
+			for(int k = 0; k < length; k++)
+				glVertex2f(output[k].x/output[k].h, output[k].y/output[k].h);
+			glEnd();
+
+
 			delete [] input;
 			input = NULL;
 			delete [] output;
@@ -214,12 +231,12 @@ void MotionFunc(int x, int y)
 	if(MouseMiddle && SelectionMode)
 	{
 		// Move the Near Plane
-		pDisplayCamera->MoveNearPlane((float) y - MouseY);
+		pDisplayCamera->MoveNearPlane((float) (y - MouseY)*0.1);
 	}
 	if(MouseRight && SelectionMode)
 	{
 		// Move the Far Plane
-		pDisplayCamera->MoveFarPlane((float) y - MouseY);
+		pDisplayCamera->MoveFarPlane((float) (y - MouseY)*0.1);
 	}
     
 	MouseX = x;
