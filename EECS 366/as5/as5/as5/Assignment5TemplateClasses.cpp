@@ -504,8 +504,11 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 	return output;
 
 	Vertex f, s, p;
-
-
+	//make sure the array is long enough. There is some upper bound considering
+	//our input is always a triangle, but I'm not sure what it is, but pretty
+	//sure it is less than 16 vertices.
+	Vertex* intermediate = new Vertex[16];
+	int outputCounter = 0;
 
 
 
@@ -534,6 +537,8 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 
 				s = p;
 				//todo: output intersection
+				intermediate[outputCounter] = intersect;
+				outputCounter++;
 			}
 			else
 			{
@@ -543,7 +548,22 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 		//is s on visible side? (-h <= x)
 		if(s.x >= -s.h)
 		{
-			//todo: output s
+			//output s
+			intermediate[outputCounter] = s;
+			outputCounter++;
+		}
+	}
+	if(outputCounter > 0)
+	{
+		//does SF cross plane? (-h <= x)
+		if((s.x < -s.h && f.x >= -f.h)
+			|| (s.x >= -s.h && f.x < -f.h))
+		{
+			//todo: compute intersection
+
+			//output intersection
+			intermediate[outputCounter] = intersect;
+			outputCounter++;
 		}
 	}
 
