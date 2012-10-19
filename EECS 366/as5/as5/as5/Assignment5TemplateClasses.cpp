@@ -303,7 +303,7 @@ Camera::Camera()
 	NearPlane = 2.0;
 	ViewPlane = 10.0;
 
-	minDistance = 1.0;
+	minDistance = .75;
 
 	LookAt();
 }

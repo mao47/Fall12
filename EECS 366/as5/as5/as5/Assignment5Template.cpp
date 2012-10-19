@@ -231,12 +231,12 @@ void MotionFunc(int x, int y)
 	if(MouseMiddle && SelectionMode)
 	{
 		// Move the Near Plane
-		pDisplayCamera->MoveNearPlane((float) (y - MouseY)*0.1);
+		pDisplayCamera->MoveNearPlane(-1*(float) (y - MouseY)*0.1);
 	}
 	if(MouseRight && SelectionMode)
 	{
 		// Move the Far Plane
-		pDisplayCamera->MoveFarPlane((float) (y - MouseY)*0.1);
+		pDisplayCamera->MoveFarPlane(-1*(float) (y - MouseY)*0.1);
 	}
     
 	MouseX = x;
