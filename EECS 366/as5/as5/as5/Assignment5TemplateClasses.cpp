@@ -504,11 +504,16 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 	return output;
 
 	Vertex f, s, p;
+
 	//make sure the array is long enough. There is some upper bound considering
 	//our input is always a triangle, but I'm not sure what it is, but pretty
 	//sure it is less than 16 vertices.
 	Vertex* intermediate = new Vertex[16];
 	int outputCounter = 0;
+
+
+	Vertex intersect;
+
 
 
 
@@ -527,14 +532,11 @@ Vertex* ClipPolygon(int count, Vertex* input, int* out_count)
 			if((s.x < -s.h && p.x >= -p.h)
 				|| (s.x >= -s.h && p.x < -p.h))
 			{
-				//todo: compute intersection
-
-				//lapidus: intersection between SP and the plane (-h <= x)
-				//compute A distance, from both S and P and use ratio. 
-				//the measures must be parallel, but don't have to be perpendicular
-				//to plane. so I think
-				// you just want the x or h difference in this case
-
+				float alpha = (s.x - s.h)/(s.x-s.h-p.x+p.x);
+				intersect.x = alpha*p.x - (1-alpha)*s.x + alpha*(p.x-s.x);
+				intersect.y = alpha*p.y - (1-alpha)*s.y + alpha*(p.y-s.y);
+				intersect.z = alpha*p.z - (1-alpha)*s.z + alpha*(p.z-s.z);
+				intersect.h = alpha*p.h - (1-alpha)*s.h + alpha*(p.h-s.h);
 				s = p;
 				//todo: output intersection
 				intermediate[outputCounter] = intersect;
