@@ -11,10 +11,10 @@ Template for Assignment 6-Local Illumination and Shading
 #include <math.h>
 
 #include <string.h>
-#include <glut.h>
+#include "glut.h"
 #include <windows.h>
-#include <glu.h>
-#include <gl.h>
+//#include "glu.h"
+#include "gl.h"
 #include "glprocs.h"
 
 
