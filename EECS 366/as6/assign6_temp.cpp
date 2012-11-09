@@ -96,6 +96,12 @@ void DisplayFunc(void) {
 	glUniform3fARB(specLoc, speR, speG, speB);
 
 	GLint lightPosLoc = glGetUniformLocationARB(p, "LightPosition");
+	if(lightSource == 0)
+	{
+		lpx = CameraRadius*cos(CameraTheta)*sin(CameraPhi);
+		lpy = CameraRadius*sin(CameraTheta)*sin(CameraPhi);
+		lpz = CameraRadius*cos(CameraPhi);
+	}
 	glUniform3fARB(lightPosLoc, lpx, lpy, lpz);
 
 	GLint lightIntensityLoc = glGetUniformLocationARB(p, "lightIntensity");
@@ -156,8 +162,8 @@ void setShaders() {
 	
 
 	//read the shader files and store the strings in corresponding char. arrays.
-	vs = shaderFileRead("phong_phong.vert");//"gourard_phong.vert");//"sampleshader.vert");
-	fs = shaderFileRead("phong_phong.frag");//"gourard_phong.frag");//"sampleshader.frag");
+	vs = shaderFileRead("gourard_phong.vert");//"gourard_phong.vert");//"sampleshader.vert");
+	fs = shaderFileRead("gourard_phong.frag");//"gourard_phong.frag");//"sampleshader.frag");
 
 	const char * vv = vs;
 	const char * ff = fs;
