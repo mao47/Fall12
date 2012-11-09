@@ -47,6 +47,21 @@ bool MouseRight = false;
 
 
 
+//phong surface parameters:
+float ambR, ambG, ambB;
+float difR, difG, difB;
+float speR, speG, speB;
+int specExp;
+
+//cook-torrance surface parameters:
+float ctaR, ctaG, ctaB;//cook-torrance ambient;
+float ctrdR, ctrdG, ctrdB;//diffues reflection;
+float ctfR, ctfG, ctfB;//fresnel function
+float m1, w1, m2, w2; //beckman parameters/weights;
+
+
+
+
 void DisplayFunc(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -232,6 +247,30 @@ void KeyboardFunc(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
+
+
+void loadMaterial(char *file) {
+	FILE* matFile = fopen(file, "r");
+	if(!matFile)
+		cout << "Failed to load " << file << "." << endl;
+	else
+		cout << "Successfully loaded " << file << "." << endl;
+
+	if(!feof(matFile))
+	{
+		fscanf(matFile, "P %f %f %f %f %f %f %f %f %f %f\n", &ambR, &ambG, &ambB,
+			&difR, &difG, &difB, &speR, &speG, &speB, &specExp);
+	}
+
+
+	if(!feof(matFile))
+	{
+		fscanf(matFile, "C %f %f %f %f %f %f %f %f %f %f %f %f %f\n", &ctaR, &ctaG, &ctaB,
+			&ctrdR, &ctrdG, &ctrdB, &ctfR, &ctfG, &ctfB, &m1, &w1, &m2, &w2);
+	}
+
+}
+
 int main(int argc, char **argv) 
 {			  
 
@@ -255,7 +294,7 @@ int main(int argc, char **argv)
 
 	setShaders();
 
-
+	loadMaterial("material.dat");
 
 
 	glutMainLoop();
