@@ -20,16 +20,16 @@ void main()
 	vec3 ecPos 		= vec3(gl_ModelViewMatrix * gl_Vertex);
 	vec3 tnorm 		= normalize(gl_NormalMatrix * gl_Normal);
 	vec3 lightVec 	= normalize(LightPosition - ecPos);
-	vec3 NdotL 		= dot(tnorm, lightVec);
-	vec3 ViewVec 		= normalize(-ecPos);
+	float NdotL 	= dot(tnorm, lightVec);
+	vec3 ViewVec 	= normalize(-ecPos);
 	vec3 LplusV 	= lightVec + ViewVec;
 	vec3 Halfway 	= LplusV / length(LplusV);
-	vec3 HdotN 		= dot(Halfway, tnorm);
+	float HdotN 	= dot(Halfway, tnorm);
 	
 	intensity = ambient * ambLight 				//ambient
 		+ lightIntensity * (
 			diffuse * NdotL 					//diffuse
-			+ specular * pow(HdotN, specEx)
+			+ specular * clamp(pow(HdotN, specEx), 0, 1)
 		);
 	gl_Position = ftransform();
 
