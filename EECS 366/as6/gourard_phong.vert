@@ -9,12 +9,6 @@ varying vec3 intensity;
 
 const vec3 ambLight = vec3(0.02, 0.02, 0.02);
 
-//varying float NdotL;
-//varying vec3 ReflectVec;
-//varying vec3 ViewVec;
-//varying vec3 Halfway;
-
-
 void main()
 {
 	vec3 ecPos 		= vec3(gl_ModelViewMatrix * gl_Vertex);

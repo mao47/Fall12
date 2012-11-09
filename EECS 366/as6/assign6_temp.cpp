@@ -46,6 +46,9 @@ bool MouseLeft = false;
 bool MouseRight = false;
 
 
+float lpx, lpy, lpz; //light position
+float lir, lig, lib; //light intensity
+int colorIndex;
 
 //phong surface parameters:
 float ambR, ambG, ambB;
@@ -81,6 +84,24 @@ void DisplayFunc(void) {
 			  0,0,0,
 			  0,0,1);
 	glEnable(GL_DEPTH_TEST);
+	
+	//I think this only needs to occur when the shader changes for most variables
+	GLint specExpLoc = glGetUniformLocationARB(p, "specEx");
+	glUniform1iARB(specExpLoc, specExp);
+	GLint ambientLoc = glGetUniformLocationARB(p, "ambient");
+	glUniform3fARB(ambientLoc, ambR, ambG, ambB);
+	GLint diffuseLoc = glGetUniformLocationARB(p, "diffuse");
+	glUniform3fARB(diffuseLoc, difR, difG, difB);
+	GLint specLoc = glGetUniformLocationARB(p, "specular");
+	glUniform3fARB(specLoc, speR, speG, speB);
+
+	GLint lightPosLoc = glGetUniformLocationARB(p, "LightPosition");
+	glUniform3fARB(lightPosLoc, lpx, lpy, lpz);
+
+	GLint lightIntensityLoc = glGetUniformLocationARB(p, "lightIntensity");
+	glUniform3fARB(lightIntensityLoc, lir, lig, lib);
+	
+	
 	glutSolidTeapot(1);
 	glutSwapBuffers();
 }
@@ -184,6 +205,45 @@ void setShaders() {
 
 }
 
+void assertLightColor() {
+	if(lightSource == 1) {
+		if(colorIndex == 0)
+			lir = lig = lib = 1.0;
+		else if(colorIndex == 1)
+		{
+			lir = 1.0;
+			lig = lib = 0.0;
+		}
+		else if(colorIndex == 2) {
+			lig = 1.0;
+			lir = lib = 0.0;
+		}
+		else
+		{
+			lib = 1.0;
+			lir = lig = 0.0;
+		}
+	}
+	else
+		lir = lig = lib = 1.0;
+}
+
+void toggleLightSource() {
+	
+	if(lightSource == 0)
+	{
+		lightSource = 1;
+		lpx = lpy = lpz = 1.0;
+		
+	}
+	else
+	{
+		lightSource = 0;
+		lpx = lpy  = lpz = 7.0;
+
+	}
+	assertLightColor();
+}
 
 //Motion and camera controls
 void KeyboardFunc(unsigned char key, int x, int y)
@@ -222,19 +282,15 @@ void KeyboardFunc(unsigned char key, int x, int y)
 		break;
 	case 'd':
 	case 'D':
-		if (lightSource == 0)
-		{
-			lightSource =1;
-		}
-		else
-		{
-			lightSource =0;
-		}
+		toggleLightSource();
 		break;
 	case 'f':
 	case 'F':
 		if (lightSource == 1)
 		{
+			colorIndex = (colorIndex + 1) % 4;
+			assertLightColor();
+			printf("%d\n", colorIndex);
 			//change color of the secondary light source at each key press, 
 			//light color cycling through pure red, green, blue, and white.
 		}
@@ -273,6 +329,9 @@ void loadMaterial(char *file) {
 
 int main(int argc, char **argv) 
 {			  
+	lpx = lpy = lpz = 7.0;
+	lir = lig = lib = 1.0;
+	colorIndex = 0;
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
