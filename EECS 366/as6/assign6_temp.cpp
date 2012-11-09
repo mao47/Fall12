@@ -156,8 +156,8 @@ void setShaders() {
 	
 
 	//read the shader files and store the strings in corresponding char. arrays.
-	vs = shaderFileRead("gourard_phong.vert");//"sampleshader.vert");
-	fs = shaderFileRead("gourard_phong.frag");//"sampleshader.frag");
+	vs = shaderFileRead("phong_phong.vert");//"gourard_phong.vert");//"sampleshader.vert");
+	fs = shaderFileRead("phong_phong.frag");//"gourard_phong.frag");//"sampleshader.frag");
 
 	const char * vv = vs;
 	const char * ff = fs;
