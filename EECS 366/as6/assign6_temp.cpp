@@ -255,6 +255,9 @@ int main(int argc, char **argv)
 
 	setShaders();
 
+
+
+
 	glutMainLoop();
 
 	return 0;
